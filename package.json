@@ -1,0 +1,23 @@
+{
+  "name": "code-build",
+  "version": "1.0.0",
+  "description": "code-build-backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code-build-project/code-build-backend.git"
+  },
+  "author": "Code-Build",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/code-build-project/code-build-backend/issues"
+  },
+  "homepage": "https://github.com/code-build-project/code-build-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.9"
+  }
+}
