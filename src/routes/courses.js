@@ -1,13 +1,15 @@
-const { Router } = require('express');
+import { Router } from "express";
+import database from "../mongoDb/database.js";
+
 const router = Router();
 
-router.get('/courses', (req, res) => {
-  const collection = router.db.courses;
+router.get("/courses", (req, res) => {
+  const collection = database.todos;
 
-  collection.find({}).toArray((err, data) =>{
-      if(err) return console.log(err);
-      res.send(data)
+  collection.find({}).toArray((err, data) => {
+    if (err) return console.log(err);
+    res.send(data);
   });
-})
+});
 
-module.exports = router;
+export default router;
