@@ -1,7 +1,11 @@
-// Общий объект, для хранения данных из БД
+/*
+  Данный файл служит некой локальной БД, где собирается в один общий объект все данные из mongoDb.
+  Все файлы могут получить данные из БД, импортировав этот файл.
+*/
 let database = {};
 
-export function update(data) {
-  database.todos = data.collection("todos"); // Коллекция планирований
+export function updateDatabase(data) {
+  database.courses = data.db("courses").collection("courses"); // Коллекция курсов
 }
+
 export default database;

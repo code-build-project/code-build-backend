@@ -1,7 +1,10 @@
 import express from "express";
 import { connect } from "./mongoDb/mongoClient.js";
 
+// Импорт роутов
 import courses from "./routes/courses.js";
+
+
 
 const PORT = process.env.PORT || 4000;
 
