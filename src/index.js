@@ -5,14 +5,17 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
-// Импорт роутов
+// Импорт и подключение роутов
 import courses from "./routes/courses.js";
 import lessons from "./routes/lessons.js";
+import articles from "./routes/articles.js";
 
-// Подключение роутов
 app.use(courses);
 app.use(lessons);
+app.use(articles);
 
+
+// Запуск сервера
 connect()
   .then(() => {
     app.listen(PORT, "127.0.1.1");
