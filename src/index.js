@@ -1,9 +1,12 @@
+import cors from "cors";
 import express from "express";
 import { connect } from "./mongoDb/mongoClient.js";
 
 const PORT = process.env.PORT || 4000;
 
 const app = express();
+
+app.use(cors());
 
 // Импорт и подключение роутов
 import courses from "./routes/courses.js";
