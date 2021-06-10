@@ -14,6 +14,8 @@ export function updateDatabase(data) {
   database.articles = data.db("articles").collection("articles"); // Коллекция статьей
   
   database.articleFilters = data.db("articles").collection("filters"); // Коллекция фильтров статьей
+
+  database.users = data.db("users").collection("users"); // Коллекция пользователей
 }
 
 export default database;

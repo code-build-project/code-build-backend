@@ -6,16 +6,21 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
+
 app.use(cors());
 
 // Импорт и подключение роутов
 import courses from "./routes/courses.js";
 import lessons from "./routes/lessons.js";
 import articles from "./routes/articles.js";
+import auth from "./routes/auth.js";
 
 app.use(courses);
 app.use(lessons);
 app.use(articles);
+app.use(auth);
 
 
 // Запуск сервера
