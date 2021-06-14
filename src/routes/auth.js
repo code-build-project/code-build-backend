@@ -1,19 +1,10 @@
 import { Router } from "express";
-import database from "../mongoDb/database.js";
+import { getUsers } from "../models/users.js";
 
 const router = Router();
 
-router.get("/courses", (req, res) => {
-  const collection = database.users;
-
-  collection.find({}).toArray((err, data) => {
-    if (err) return console.log(err);
-    res.send(data);
-  });
-});
-
 router.post('/login', (req, res) => {
-  const collection = database.users;
+  const collection = getUsers;
 
   collection.find({ email: req.body.email }).toArray((err, data) => {
     if (err) return console.log(err);

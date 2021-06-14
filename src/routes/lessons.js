@@ -1,10 +1,10 @@
 import { Router } from "express";
-import database from "../mongoDb/database.js";
+import { getLessons } from "../models/lessons.js";
 
 const router = Router();
 
 router.get("/lessons", (req, res) => {
-  const collection = database.lessons;
+  const collection = getLessons();
 
   collection.find({}).toArray((err, data) => {
     if (err) return console.log(err);

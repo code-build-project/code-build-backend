@@ -1,14 +1,16 @@
 import cors from "cors";
 import express from "express";
-import { connect } from "./mongoDb/mongoClient.js";
+import mongoClient from "./mongoDb/mongoClient.js";
 
 const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+// Подключение функций для получения данных в формате json
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
+// Подключения настроенной конфигурации CORS
 app.use(cors());
 
 // Импорт и подключение роутов
@@ -24,7 +26,7 @@ app.use(auth);
 
 
 // Запуск сервера
-connect()
+mongoClient.connect()
   .then(() => {
     app.listen(PORT, "127.0.1.1");
     console.log("Сервер запустился...");

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import database from "../mongoDb/database.js";
+import { getArticles, getArticleFilters } from "../models/articles.js";
 
 const router = Router();
 
 router.get("/articles", (req, res) => {
-  const collection = database.articles;
+  const collection = getArticles();
 
   collection.find({}).toArray((err, data) => {
     if (err) return console.log(err);
@@ -13,7 +13,7 @@ router.get("/articles", (req, res) => {
 });
 
 router.get("/articles/filters", (req, res) => {
-  const collection = database.articleFilters;
+  const collection = getArticleFilters();
 
   collection.find({}).toArray((err, data) => {
     if (err) return console.log(err);

@@ -1,7 +1,7 @@
-import { updateDatabase } from "./database.js"; // функция обновления локального БД
 import mongodb from "mongodb";
 
 const { MongoClient } = mongodb;
+let database = {};
 
 /* 
   Вначале создается объект MongoClient. Для этого в его конструктор передается два параметра. 
@@ -14,17 +14,23 @@ const mongoClient = new MongoClient(
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
-export function connect() {
-  return new Promise((resolve, reject) => {
-    mongoClient.connect((err, response) => {
-      if (err) {
-        console.log("Не удалось подключиться к базе данных!");
-        reject(err);
-      }
+export default {
+  connect() {
+    return new Promise((resolve, reject) => {
+      mongoClient.connect((err, response) => {
+        if (err) {
+          console.log("Не удалось подключиться к базе данных!");
+          reject(err);
+        }
 
-      updateDatabase(response); // При удачном соединении, обновляем общий объект БД
+        database = response; // При удачном соединении, записываем полученные данные БД
 
-      resolve(response);
+        resolve(response);
+      });
     });
-  });
+  },
+
+  getCollection(databaseName, collectionName) {
+    return database.db(databaseName).collection(collectionName);
+  }
 }
