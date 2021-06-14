@@ -15,7 +15,8 @@ router.post("/sign", async (req, res) => {
       message: "Такой email уже зарегестрирован!",
     });
   } else {
-    const salt = bcrypt.genSaltSync(10); // "соль" для хеширования пароля
+    // "соль" для хеширования пароля
+    const salt = bcrypt.genSaltSync(10); 
 
     // Новый пользователь с хешированым паролем
     const newUser = {

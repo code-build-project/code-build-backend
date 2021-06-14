@@ -1,15 +1,43 @@
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
 import { Router } from "express";
 import { getUsers } from "../models/users.js";
 
 const router = Router();
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const collection = getUsers();
 
-  collection.find({ email: req.body.email }).toArray((err, data) => {
-    if (err) return console.log(err);
-    res.send(data);
-  });
+  const candidate = await collection.findOne({ email: req.body.email });
+
+  // Пользователь существует, проверка пароля
+  if (candidate) {
+    const password = bcrypt.compareSync(req.body.password, candidate.password);
+    
+    // Пароли совпали, генерация токена
+    if(password) {
+      const token = jwt.sign({
+        email: candidate.email,
+        userId: candidate._id
+      }, '', {expiresIn: 3600});
+
+      res.status(200).json({
+        token: token,
+      });
+    }
+    // Пароли не совпали, ошибка
+    else {
+      res.status(401).json({
+        message: "Пароли не совпадают!",
+      });
+    }
+  } 
+  // Пользователя нет, ошибка
+  else {
+    res.status(404).json({
+      message: "Пользователь с таким email не найден!",
+    });
+  }
 });
 
 export default router;

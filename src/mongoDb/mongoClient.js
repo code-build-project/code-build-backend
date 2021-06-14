@@ -15,25 +15,24 @@ const mongoClient = new MongoClient(
 );
 
 export default {
+  // Подключение к БД
   connect() {
     return new Promise((resolve, reject) => {
       mongoClient.connect((err, response) => {
-        if (err) {
-          console.log("Не удалось подключиться к базе данных!");
-          reject(err);
-        }
+        if (err) reject(err);
 
-        database = response; // При удачном соединении, записываем полученные данные БД
-
+        database = response; 
         resolve(response);
       });
     });
   },
 
+  // Получение коллекции
   getCollection(databaseName, collectionName) {
     return database.db(databaseName).collection(collectionName);
   },
 
+  // Добавление нового элемента в коллекцию
   setCollection(databaseName, collectionName, user) {
     return new Promise((resolve, reject) => {
       database
@@ -42,10 +41,10 @@ export default {
         .insertOne(user, (err, response) => {
           if (err) {
             reject(err);
-          } 
-            
+          }
+
           resolve(response);
         });
-    })
+    });
   },
 };
