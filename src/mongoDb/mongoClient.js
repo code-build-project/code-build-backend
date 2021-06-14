@@ -32,5 +32,20 @@ export default {
 
   getCollection(databaseName, collectionName) {
     return database.db(databaseName).collection(collectionName);
-  }
-}
+  },
+
+  setCollection(databaseName, collectionName, user) {
+    return new Promise((resolve, reject) => {
+      database
+        .db(databaseName)
+        .collection(collectionName)
+        .insertOne(user, (err, response) => {
+          if (err) {
+            reject(err);
+          } 
+            
+          resolve(response);
+        });
+    })
+  },
+};

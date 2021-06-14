@@ -14,15 +14,17 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cors());
 
 // Импорт и подключение роутов
+import reg from "./routes/reg.js";
+import auth from "./routes/auth.js";
 import courses from "./routes/courses.js";
 import lessons from "./routes/lessons.js";
 import articles from "./routes/articles.js";
-import auth from "./routes/auth.js";
 
+app.use(reg);
+app.use(auth);
 app.use(courses);
 app.use(lessons);
 app.use(articles);
-app.use(auth);
 
 
 // Запуск сервера
