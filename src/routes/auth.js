@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { Router } from "express";
+import keys from "../config/keys.js";
 import { getUsers } from "../models/users.js";
 
 const router = Router();
@@ -19,10 +20,10 @@ router.post('/login', async (req, res) => {
       const token = jwt.sign({
         email: candidate.email,
         userId: candidate._id
-      }, '', {expiresIn: 3600});
+      }, keys.jwt, {expiresIn: 3600});
 
       res.status(200).json({
-        token: token,
+        token: `Bearer ${token}`,
       });
     }
     // Пароли не совпали, ошибка

@@ -1,4 +1,5 @@
 import mongodb from "mongodb";
+import keys from "../config/keys.js";
 
 const { MongoClient } = mongodb;
 let database = {};
@@ -10,7 +11,7 @@ let database = {};
   Свойство useUnifiedTopology: true - оно указывает, что надо использовать единую топологию драйвера для node.js.
 */
 const mongoClient = new MongoClient(
-  "mongodb+srv://code-build:code-build@cluster0.3bdan.mongodb.net/todos",
+  keys.mongoURI,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 

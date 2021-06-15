@@ -1,17 +1,18 @@
 import cors from "cors";
 import express from "express";
+import keys from "./config/keys.js";
 import mongoClient from "./mongoDb/mongoClient.js";
 
-const PORT = process.env.PORT || 4000;
-
 const app = express();
+
+const PORT = keys.PORT || 4000;
+
+// Подключения настроенной конфигурации CORS
+app.use(cors());
 
 // Подключение функций для получения данных в формате json
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
-
-// Подключения настроенной конфигурации CORS
-app.use(cors());
 
 // Импорт и подключение роутов
 import reg from "./routes/reg.js";
