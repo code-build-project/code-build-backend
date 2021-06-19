@@ -19,7 +19,7 @@ router.post('/login', async (req, res) => {
     if(password) {
       const token = jwt.sign({
         email: candidate.email,
-        userId: candidate._id
+        id: candidate._id
       }, keys.jwt, {expiresIn: 3600});
 
       res.status(200).json({

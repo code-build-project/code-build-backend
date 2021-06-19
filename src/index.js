@@ -17,12 +17,14 @@ app.use(express.urlencoded({ extended: false }))
 // Импорт и подключение роутов
 import reg from "./routes/reg.js";
 import auth from "./routes/auth.js";
+import user from "./routes/user.js";
 import courses from "./routes/courses.js";
 import lessons from "./routes/lessons.js";
 import articles from "./routes/articles.js";
 
 app.use(reg);
 app.use(auth);
+app.use(user);
 app.use(courses);
 app.use(lessons);
 app.use(articles);
