@@ -19,7 +19,9 @@ router.post('/login', async (req, res) => {
     if(password) {
       const token = jwt.sign({
         email: candidate.email,
-        id: candidate._id
+        id: candidate._id,
+        name: candidate.name,
+        isPremium: candidate.isPremium
       }, keys.jwt, {expiresIn: 3600});
 
       res.status(200).json({
