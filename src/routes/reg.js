@@ -21,7 +21,9 @@ router.post("/sign", async (req, res) => {
     // Новый пользователь с хешированым паролем
     const newUser = {
       email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, salt) 
+      password: bcrypt.hashSync(req.body.password, salt),
+      name: req.body.name,
+      isPremium: false
     };
 
     try {
