@@ -16,12 +16,18 @@ const transporter = nodemailer.createTransport({
 })
 
 let mail = {
-  from: '"Node js" <code-build@yandex.ru>',
+  from: '"Codebuild" <code-build@yandex.ru>',
   to: 'ya.sham@yandex.ru',
-  subject: 'Message from Node js',
-  text: 'This message was sent from Node js server.',
-  html:
-    'This <i>message</i> was sent from <strong>Node js</strong> server.',
+  subject: 'Подтверждение регистрации',
+  html:`
+    <h2>Поздравляем! Вы успешно зарегестрировались на нашем сайте.</h2>
+
+    <i>Данные вашей учетной записи:</i>
+    <ul>
+      <li>login: login</li>
+      <li>password: password</li>
+    </ul>
+  `
 }
 
 router.post("/sign", async (req, res) => {
