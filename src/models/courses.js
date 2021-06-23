@@ -4,8 +4,3 @@ import mongoClient from "../mongoDb/mongoClient.js";
 export const getCourses = () => {
   return mongoClient.getCollection('courses', 'courses');
 }
-
-// Получение всех фильтров для курсов
-export const getCourseFilters = () => {
-  return mongoClient.getCollection('courses', 'filters');
-}

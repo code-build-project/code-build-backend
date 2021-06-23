@@ -4,8 +4,3 @@ import mongoClient from "../mongoDb/mongoClient.js";
 export const getArticles = () => {
   return mongoClient.getCollection('articles', 'articles');
 }
-
-// Получение всех фильтров для статьей
-export const getArticleFilters = () => {
-  return mongoClient.getCollection('articles', 'filters');
-}
