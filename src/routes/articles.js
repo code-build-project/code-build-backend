@@ -3,6 +3,7 @@ import { getArticles } from "../models/articles.js";
 
 const router = Router();
 
+// Получение списка статьей, с фильрацией по тегу
 router.get("/articles", (req, res) => {
   const collection = getArticles();
 
@@ -12,10 +13,11 @@ router.get("/articles", (req, res) => {
   });
 });
 
-router.post("/articles/favorites", (req, res) => {
+// Получение статей которые лайкнул пользователь
+router.get("/articles/favorites", (req, res) => {
   const collection = getArticles();
 
-  collection.find({}).toArray((err, data) => {
+  collection.find({ likes: req.query.userId }).toArray((err, data) => {
     if (err) return console.log(err);
     res.send(data);
   });
