@@ -4,3 +4,12 @@ import mongoClient from "../mongoDb/mongoClient.js";
 export const getArticles = () => {
   return mongoClient.getCollection('articles', 'articles');
 }
+
+// Обновить данные статьи
+export const addUserLike = async (id, newValue) => {
+  try {
+    return await mongoClient.setCollection("articles", "articles", id, newValue);
+  } catch (e) {
+    throw e;
+  }
+};

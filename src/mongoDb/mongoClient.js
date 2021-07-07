@@ -48,4 +48,20 @@ export default {
         });
     });
   },
+
+  // Обновить документ коллекции
+  updateCollectionDocument(databaseName, collectionName, id, newValue) {
+    return new Promise((resolve, reject) => {
+      database
+        .db(databaseName)
+        .collection(collectionName)
+        .findOneAndUpdate({_id: id}, {$push: newValue}, (err, response) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(response);
+        });
+    });
+  },
 };
