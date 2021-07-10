@@ -10,10 +10,7 @@ export const getUsers = (keyName, keyValue) => {
 }
 
 // Добавить нового пользователя
-export const addUser = async (user) => {
-  try {
-    return await mongoClient.setCollection("users", "users", user);
-  } catch (e) {
-    throw e;
-  }
+export const addUser = (user) => {
+
+  return mongoClient.updateCollection("users", "users", user);
 };

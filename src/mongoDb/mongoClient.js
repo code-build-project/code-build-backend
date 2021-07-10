@@ -28,10 +28,39 @@ export default {
     });
   },
 
-  // // Получение коллекции
-  // getCollection(databaseName, collectionName) {
-  //   return database.db(databaseName).collection(collectionName);
-  // },
+  // Получение имена всех коллекций указанной базы данных
+  getCollectionNames(databaseName, parameters = {}) {
+    return new Promise((resolve, reject) => {
+      database
+        .db(databaseName)
+        .listCollections(parameters)
+        .toArray((err, response) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(response.map((item) => item.name));
+        });
+    });
+  },
+
+  // Получение содержимого всех коллекций указанной базы данных
+  async getDatabase(databaseName, parameters) {
+    let collectionNames = await this.getCollectionNames(databaseName)
+    let allCollections = [];
+
+    for(var i = 0; i < collectionNames.length; i++) {    
+      await this.getCollection(databaseName, collectionNames[i], parameters)
+      .then((response) => {
+        allCollections.push(...response)
+      })
+      .catch((err) => {
+        throw err;
+      })
+    }
+
+    return allCollections
+  },
 
   // Получение коллекции
   getCollection(databaseName, collectionName, parameters) {
@@ -59,12 +88,12 @@ export default {
   },
 
   // Добавление нового элемента в коллекцию
-  setCollection(databaseName, collectionName, user) {
+  updateCollection(databaseName, collectionName, document) {
     return new Promise((resolve, reject) => {
       database
         .db(databaseName)
         .collection(collectionName)
-        .insertOne(user, (err, response) => {
+        .insertOne(document, (err, response) => {
           if (err) {
             reject(err);
           }

@@ -3,6 +3,7 @@ import { getArticleFilters, getCourseFilters } from "../models/filters.js";
 
 const router = Router();
 
+// Получение списка фильтров для страницы "Блог"
 router.get("/filters/articles", (req, res) => {
 
   getArticleFilters()
@@ -16,6 +17,7 @@ router.get("/filters/articles", (req, res) => {
     });
 });
 
+// Получение списка фильтров для страницы "Видеокурсы"
 router.get("/filters/courses", (req, res) => {
   getCourseFilters()
     .then((data) => {

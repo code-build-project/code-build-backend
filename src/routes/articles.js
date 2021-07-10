@@ -39,7 +39,6 @@ router.get("/articles/favorites", (req, res) => {
 router.post("/articles/add-like", (req, res) => {
   addLikeArticle(req.body.articleId, req.body.userId)
     .then((response) => {
-      console.log(response);
       res.send(response.value);
     })
     .catch(() => {
@@ -51,7 +50,6 @@ router.post("/articles/add-like", (req, res) => {
 router.post("/articles/delete-like", (req, res) => {
   deleteLikeArticle(req.body.articleId, req.body.userId)
     .then((response) => {
-      console.log(response);
       res.send(response.value);
     })
     .catch(() => {
