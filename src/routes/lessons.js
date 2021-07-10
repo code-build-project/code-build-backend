@@ -4,12 +4,15 @@ import { getLessons } from "../models/lessons.js";
 const router = Router();
 
 router.get("/lessons", (req, res) => {
-  const collection = getLessons();
-
-  collection.find({}).toArray((err, data) => {
-    if (err) return console.log(err);
-    res.send(data);
-  });
+  getLessons()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 });
 
 export default router;

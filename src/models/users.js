@@ -1,9 +1,13 @@
 import mongoClient from "../mongoDb/mongoClient.js";
 
 // Получение всех пользователей
-export const getUsers = () => {
-  return mongoClient.getCollection("users", "users");
-};
+export const getUsers = (keyName, keyValue) => {
+  const parameters = {
+    key: {[keyName]: keyValue}
+  }
+
+  return mongoClient.getDocument('users', 'users', parameters);
+}
 
 // Добавить нового пользователя
 export const addUser = async (user) => {

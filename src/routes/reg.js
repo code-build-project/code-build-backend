@@ -31,9 +31,8 @@ let mail = {
 }
 
 router.post("/sign", async (req, res) => {
-  const collection = getUsers();
-
-  const candidate = await collection.findOne({ email: req.body.email });
+  
+  const candidate = await getUsers("email", req.body.email)
 
   try {
     let result = await transporter.sendMail(mail);

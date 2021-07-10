@@ -7,9 +7,7 @@ import { getUsers } from "../models/users.js";
 const router = Router();
 
 router.post('/login', async (req, res) => {
-  const collection = getUsers();
-
-  const candidate = await collection.findOne({ email: req.body.email });
+  const candidate = await getUsers("email", req.body.email)
 
   // Пользователь существует, проверка пароля
   if (candidate) {

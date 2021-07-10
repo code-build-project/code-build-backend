@@ -10,10 +10,10 @@ let database = {};
   Второй парамтр - это необязательный объкт конфигурации. 
   Свойство useUnifiedTopology: true - оно указывает, что надо использовать единую топологию драйвера для node.js.
 */
-const mongoClient = new MongoClient(
-  keys.mongoURI,
-  { useNewUrlParser: true, useUnifiedTopology: true }
-);
+const mongoClient = new MongoClient(keys.mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 export default {
   // Подключение к БД
@@ -22,15 +22,40 @@ export default {
       mongoClient.connect((err, response) => {
         if (err) reject(err);
 
-        database = response; 
+        database = response;
         resolve(response);
       });
     });
   },
 
+  // // Получение коллекции
+  // getCollection(databaseName, collectionName) {
+  //   return database.db(databaseName).collection(collectionName);
+  // },
+
   // Получение коллекции
-  getCollection(databaseName, collectionName) {
-    return database.db(databaseName).collection(collectionName);
+  getCollection(databaseName, collectionName, parameters) {
+    return new Promise((resolve, reject) => {
+      database
+        .db(databaseName)
+        .collection(collectionName)
+        .find(parameters.key)
+        .toArray((err, response) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(response);
+        });
+    });
+  },
+
+  // Получение одного документа из коллекции
+  getDocument(databaseName, collectionName, parameters) {
+    return database
+      .db(databaseName)
+      .collection(collectionName)
+      .findOne(parameters.key);
   },
 
   // Добавление нового элемента в коллекцию
@@ -50,18 +75,22 @@ export default {
   },
 
   // Обновить документ коллекции
-  updateCollectionDocument(databaseName, collectionName, id, newValue) {
+  updateDocument(databaseName, collectionName, parameters) {
     return new Promise((resolve, reject) => {
       database
         .db(databaseName)
         .collection(collectionName)
-        .findOneAndUpdate({_id: id}, {$push: newValue}, (err, response) => {
-          if (err) {
-            reject(err);
-          }
+        .findOneAndUpdate(
+          parameters.key,
+          parameters.operator,
+          (err, response) => {
+            if (err) {
+              reject(err);
+            }
 
-          resolve(response);
-        });
+            resolve(response);
+          }
+        );
     });
   },
 };
