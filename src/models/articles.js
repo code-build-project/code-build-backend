@@ -1,33 +1,30 @@
-import mongodb from "mongodb";
 import mongoClient from "../mongoDb/mongoClient.js";
 
-const { ObjectId } = mongodb;
+class Parameters {
+  constructor(filter = {}, operator = {}) {
+    this.filter = filter;
+    this.operator = operator;
+  }
+}
+
 
 // Получение всех статьей
-export const getArticles = (keyName, keyValue) => {
-  const parameters = {
-    key: {[keyName]: keyValue}
-  }
+export const getArticles = (filter) => {
+  const parameters = new Parameters(filter);
 
   return mongoClient.getCollection('articles', 'articles', parameters);
 }
 
 // Добавить данного юзера в список лайков статьи
-export const addLikeArticle = (articleId, userId) => {
-  const parameters = {
-    key: {_id: ObjectId(articleId)},
-    operator: {$push: {likes: userId}}
-  }
+export const addLikeArticle = (filter, operator) => {
+  const parameters = new Parameters(filter, operator);
 
   return mongoClient.updateDocument("articles", "articles", parameters);
 };
 
 // Удалить данного юзера из списка лайков статьи
-export const deleteLikeArticle = (articleId, userId) => {
-  const parameters = {
-    key: {_id: ObjectId(articleId)},
-    operator: {$pull: {likes: userId}}
-  }
+export const deleteLikeArticle = (filter, operator) => {
+  const parameters = new Parameters(filter, operator);
 
   return mongoClient.updateDocument("articles", "articles", parameters);
 };

@@ -1,16 +1,17 @@
+import mongodb from "mongodb";
 import { Router } from "express";
-import {
-  getArticles,
-  addLikeArticle,
-  deleteLikeArticle,
-} from "../models/articles.js";
+import { getArticles, addLikeArticle, deleteLikeArticle } from "../models/articles.js";
 
 const router = Router();
+const { ObjectId } = mongodb;
 
 // Получение списка статьей, с фильрацией по тегу
 router.get("/articles", (req, res) => {
+  const filter = {
+    tags: req.query.tag
+  }
 
-  getArticles("tags", req.query.tag)
+  getArticles(filter)
     .then((data) => {
       res.send(data);
     })
@@ -23,8 +24,11 @@ router.get("/articles", (req, res) => {
 
 // Получение статей которые лайкнул пользователь
 router.get("/articles/favorites", (req, res) => {
+  const filter = {
+    likes: req.query.userId
+  }
 
-  getArticles("likes", req.query.userId)
+  getArticles(filter)
     .then((data) => {
       res.send(data);
     })
@@ -37,7 +41,15 @@ router.get("/articles/favorites", (req, res) => {
 
 // Добавление в список лайков, нового юзера
 router.post("/articles/add-like", (req, res) => {
-  addLikeArticle(req.body.articleId, req.body.userId)
+  const filter = {
+    _id: ObjectId(req.body.articleId)
+  }
+
+  const operator = {
+    $push: {likes: req.body.userId}
+  }
+
+  addLikeArticle(filter, operator)
     .then((response) => {
       res.send(response.value);
     })
@@ -48,7 +60,15 @@ router.post("/articles/add-like", (req, res) => {
 
 // Удаление юзера из списка лайков
 router.post("/articles/delete-like", (req, res) => {
-  deleteLikeArticle(req.body.articleId, req.body.userId)
+  const filter = {
+    _id: ObjectId(req.body.articleId)
+  }
+
+  const operator = {
+    $pull: {likes: req.body.userId}
+  }
+
+  deleteLikeArticle(filter, operator)
     .then((response) => {
       res.send(response.value);
     })
