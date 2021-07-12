@@ -1,4 +1,7 @@
+import mongodb from "mongodb";
 import mongoClient from "../mongoDb/mongoClient.js";
+
+const { ObjectId } = mongodb;
 
 class Parameters {
   constructor(filter = {}, operator = {}) {
@@ -7,24 +10,60 @@ class Parameters {
   }
 }
 
-
 // Получение всех статьей
-export const getArticles = (filter) => {
-  const parameters = new Parameters(filter);
+export const getArticles = (req, res) => {
+  const parameters = new Parameters({ tags: req.query.tag });
 
-  return mongoClient.getCollection('articles', 'articles', parameters);
+  mongoClient.getCollection('articles', 'articles', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
+}
+
+// Получение статьей которые лайкнул пользователь
+export const getFavoriteArticles = (req, res) => {
+  const parameters = new Parameters({ likes: req.query.userId });
+
+  mongoClient.getCollection('articles', 'articles', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 }
 
 // Добавить данного юзера в список лайков статьи
-export const addLikeArticle = (filter, operator) => {
-  const parameters = new Parameters(filter, operator);
+export const addLikeArticle = (req, res) => {
+  const parameters = new Parameters(
+    { _id: ObjectId(req.body.articleId) }, 
+    { $push: {likes: req.body.userId} },
+  );
 
-  return mongoClient.updateDocument("articles", "articles", parameters);
+  mongoClient.updateDocument("articles", "articles", parameters)
+    .then((response) => res.send(response.value))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 };
 
 // Удалить данного юзера из списка лайков статьи
-export const deleteLikeArticle = (filter, operator) => {
-  const parameters = new Parameters(filter, operator);
+export const deleteLikeArticle = (req, res) => {
+  const parameters = new Parameters(
+    { _id: ObjectId(req.body.articleId) }, 
+    { $pull: {likes: req.body.userId} },
+  );
 
-  return mongoClient.updateDocument("articles", "articles", parameters);
+  mongoClient.updateDocument("articles", "articles", parameters)
+    .then((response) => res.send(response.value))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 };

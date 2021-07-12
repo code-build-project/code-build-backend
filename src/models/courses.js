@@ -3,31 +3,69 @@ import mongoClient from "../mongoDb/mongoClient.js";
 
 const { ObjectId } = mongodb;
 
-// Получение всех курсов
-export const getCourses = (keyName, keyValue) => {
-  const parameters = {
-    key: {[keyName]: keyValue}
+class Parameters {
+  constructor(filter = {}, operator = {}) {
+    this.filter = filter;
+    this.operator = operator;
   }
+}
 
-  return mongoClient.getCollection('courses', 'courses', parameters);
+
+// Получение всех курсов
+export const getCourses = (req, res) => {
+  const parameters = new Parameters({ tags: req.query.tag });
+
+  mongoClient.getCollection('courses', 'courses', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
+}
+
+// Получение курсов которые лайкнул пользователь
+export const getFavoriteCourses = (req, res) => {
+  const parameters = new Parameters({ likes: req.query.userId });
+
+  mongoClient.getCollection('articles', 'articles', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 }
 
 // Добавить данного юзера в список лайков курса
-export const addLikeCourse = (courseId, userId) => {
-  const parameters = {
-    key: {_id: ObjectId(courseId)},
-    operator: {$push: {likes: userId}}
-  }
+export const addLikeCourse = (req, res) => {
+  const parameters = new Parameters(
+    { _id: ObjectId(req.body.courseId) }, 
+    { $push: {likes: req.body.userId} },
+  );
 
-  return mongoClient.updateDocument("courses", "courses", parameters);
+  mongoClient.updateDocument("courses", "courses", parameters)
+    .then((response) => res.send(response.value))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 };
 
 // Удалить данного юзера из списка лайков курса
-export const deleteLikeCourse = (courseId, userId) => {
-  const parameters = {
-    key: {_id: ObjectId(courseId)},
-    operator: {$pull: {likes: userId}}
-  }
+export const deleteLikeCourse = (req, res) => {
+  const parameters = new Parameters(
+    { _id: ObjectId(req.body.courseId) }, 
+    { $pull: {likes: req.body.userId} },
+  );
 
-  return mongoClient.updateDocument("courses", "courses", parameters);
+
+  mongoClient.updateDocument("courses", "courses", parameters)
+    .then((response) => res.send(response.value))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 };
