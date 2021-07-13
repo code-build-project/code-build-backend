@@ -1,15 +1,34 @@
 import mongoClient from "../mongoDb/mongoClient.js";
 
-// Получение всех фильтров для статьей
-export const getArticleFilters = () => {
-  const parameters = {}
+class Parameters {
+  constructor(filter = {}, operator = {}) {
+    this.filter = filter;
+    this.operator = operator;
+  }
+}
 
-  return mongoClient.getCollection('filters', 'articles', parameters);
+// Получение всех фильтров для статьей
+export const getArticleFilters = (req, res) => {
+  const parameters = new Parameters();
+
+  mongoClient.getCollection('filters', 'articles', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 }
 
 // Получение всех фильтров для курсов
-export const getCourseFilters = () => {
-  const parameters = {}
+export const getCourseFilters = (req, res) => {
+  const parameters = new Parameters();
 
-  return mongoClient.getCollection('filters', 'courses', parameters);
+  mongoClient.getCollection('filters', 'courses', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 }

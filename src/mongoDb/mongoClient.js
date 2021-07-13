@@ -68,7 +68,7 @@ export default {
       database
         .db(databaseName)
         .collection(collectionName)
-        .find(parameters.key)
+        .find(parameters.filter)
         .toArray((err, response) => {
           if (err) {
             reject(err);

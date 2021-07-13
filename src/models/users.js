@@ -1,5 +1,12 @@
 import mongoClient from "../mongoDb/mongoClient.js";
 
+class Parameters {
+  constructor(filter = {}, operator = {}) {
+    this.filter = filter;
+    this.operator = operator;
+  }
+}
+
 // Получение всех пользователей
 export const getUsers = (keyName, keyValue) => {
   const parameters = {

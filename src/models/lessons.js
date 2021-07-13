@@ -3,38 +3,67 @@ import mongoClient from "../mongoDb/mongoClient.js";
 
 const { ObjectId } = mongodb;
 
-// Получение всех видеоуроков из всех коллекций
-export const getAllLessons = (keyName, keyValue) => {
-  const parameters = {
-    key: {[keyName]: keyValue}
+class Parameters {
+  constructor(filter = {}, operator = {}) {
+    this.filter = filter;
+    this.operator = operator;
   }
-
-  return mongoClient.getDatabase('lessons', parameters);
 }
 
 // Получение видеоуроков из указанной коллекции
-export const getCourseLessons = (collectionName) => {
-  const parameters = {}
+export const getCourseLessons = (req, res) => {
+  const parameters = new Parameters();
 
-  return mongoClient.getCollection('lessons', collectionName, parameters);
+  mongoClient.getCollection('lessons', req.query.courseName, parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
+}
+
+// Получение всех видеоуроков из всех коллекций
+export const getFavoriteLessons = (req, res) => {
+  const parameters = new Parameters({ likes: req.query.userId });
+
+  mongoClient.getDatabase('lessons', parameters)
+    .then(data => res.send(data))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 }
 
 // Добавить данного юзера в список лайков видеоуроков
-export const addLikeLesson = (lessonId, userId, collectionName) => {
-  const parameters = {
-    key: {_id: ObjectId(lessonId)},
-    operator: {$push: {likes: userId}}
-  }
+export const addLikeLesson = (req, res) => {
+  const parameters = new Parameters(
+    { _id:  ObjectId(req.body.lessonId) }, 
+    { $push: {likes: req.body.userId} }
+  );
 
-  return mongoClient.updateDocument("lessons", collectionName, parameters);
+  mongoClient.updateDocument("lessons", req.body.courseName, parameters)
+    .then(data => res.send(data.value))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 };
 
 // Удалить данного юзера из списка лайков видеоуроков
 export const deleteLikeLesson = (lessonId, userId, collectionName) => {
-  const parameters = {
-    key: {_id: ObjectId(lessonId)},
-    operator: {$pull: {likes: userId}}
-  }
+  const parameters = new Parameters(
+    { _id:  ObjectId(req.body.lessonId) }, 
+    { $pull: {likes: req.body.userId} }
+  );
 
-  return mongoClient.updateDocument("lessons", collectionName, parameters);
+  mongoClient.updateDocument("lessons", req.body.courseName, parameters)
+    .then(data => res.send(data.value))
+    .catch((err) => {
+      res.status(401).json({
+        message: `Ошибка: ${err}`,
+      });
+    });
 };
