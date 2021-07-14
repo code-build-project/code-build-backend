@@ -1,22 +1,9 @@
-import jwt from "jsonwebtoken"
 import { Router } from "express";
-import keys from "../config/keys.js";
+import { getUser } from "../controllers/user.js";
 
 const router = Router();
 
-router.get('/user', (req, res) => {
-  //Токен валидный, возвращаем данные пользователя
-  try {
-    const decoded = jwt.verify(req.headers.authorization, keys.jwt);
-
-    res.status(200).json(decoded);
-  } 
-  // Неверный токен, ошибка
-  catch(err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
-  }
-});
+// Получение данных авторизированного пользователя
+router.get('/user', getUser);
 
 export default router;

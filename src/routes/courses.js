@@ -4,7 +4,7 @@ import {
   getFavoriteCourses, 
   addLikeCourse, 
   deleteLikeCourse 
-} from "../models/courses.js";
+} from "../controllers/courses.js";
 
 const router = Router();
 

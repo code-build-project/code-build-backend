@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getArticleFilters, getCourseFilters } from "../models/filters.js";
+import { getArticleFilters, getCourseFilters } from "../controllers/filters.js";
 
 const router = Router();
 

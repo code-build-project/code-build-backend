@@ -46,20 +46,20 @@ export default {
 
   // Получение содержимого всех коллекций указанной базы данных
   async getDatabase(databaseName, parameters) {
-    let collectionNames = await this.getCollectionNames(databaseName)
+    let collectionNames = await this.getCollectionNames(databaseName);
     let allCollections = [];
 
-    for(var i = 0; i < collectionNames.length; i++) {    
+    for (var i = 0; i < collectionNames.length; i++) {
       await this.getCollection(databaseName, collectionNames[i], parameters)
-      .then((response) => {
-        allCollections.push(...response)
-      })
-      .catch((err) => {
-        throw err;
-      })
+        .then((response) => {
+          allCollections.push(...response);
+        })
+        .catch((err) => {
+          throw err;
+        });
     }
 
-    return allCollections
+    return allCollections;
   },
 
   // Получение коллекции

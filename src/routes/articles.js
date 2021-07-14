@@ -4,7 +4,7 @@ import {
   getFavoriteArticles, 
   addLikeArticle, 
   deleteLikeArticle 
-} from "../models/articles.js";
+} from "../controllers/articles.js";
 
 const router = Router();
 
