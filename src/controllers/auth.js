@@ -2,16 +2,16 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import keys from "../config/keys.js";
 import mongoClient from "../mongoDb/mongoClient.js";
-import { Parameters } from "../models/Auth.js";
+import MongoOptionsFactory from "../models/MongoOptions.js";
+
+const factory = new MongoOptionsFactory();
 
 // Авторизация с возвратом сгенерированного токена
 export const login = async (req, res) => {
-  const params = new Parameters(
-    "users",
-    "users",
-    { email: req.body.email },
-    {}
-  );
+  const params = factory.createOptions({
+    database: "users",
+    filter: { email: req.body.email },
+  });
 
   const candidate = await mongoClient.getDocument(params);
 

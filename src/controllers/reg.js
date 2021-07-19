@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import mongoClient from "../mongoDb/mongoClient.js";
-import { Parameters } from "../models/Reg.js";
+import MongoOptionsFactory from "../models/MongoOptions.js";
+
+const factory = new MongoOptionsFactory();
 
 const transporter = nodemailer.createTransport({
   host: "smtp.yandex.ru",
@@ -30,12 +32,10 @@ let mail = {
 
 // Регистрация
 export const registration = async (req, res) => {
-  const params = new Parameters(
-    "users",
-    "users",
-    { email: req.body.email },
-    {}
-  );
+  const params = factory.createOptions({
+    database: "users",
+    filter: { email: req.body.email },
+  });
 
   const candidate = await mongoClient.getDocument(params);
 

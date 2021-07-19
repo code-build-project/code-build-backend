@@ -1,17 +1,17 @@
 import mongodb from "mongodb";
+import { Article } from "../models/Articles.js";
 import mongoClient from "../mongoDb/mongoClient.js";
-import { Parameters, Article } from "../models/Articles.js";
+import MongoOptionsFactory from "../models/MongoOptions.js";
 
 const { ObjectId } = mongodb;
+const factory = new MongoOptionsFactory();
 
 // Получение всех статьей
 export const getArticles = (req, res) => {
-  const params = new Parameters(
-    "articles",
-    "articles",
-    { tags: req.query.tag },
-    {}
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    filter: { tags: req.query.tag },
+  });
 
   mongoClient
     .getCollection(params)
@@ -28,12 +28,10 @@ export const getArticles = (req, res) => {
 
 // Получение статьей которые лайкнул пользователь
 export const getFavoriteArticles = (req, res) => {
-  const params = new Parameters(
-    "articles",
-    "articles",
-    { likes: req.query.userId },
-    {}
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    filter: { likes: req.query.userId },
+  });
 
   mongoClient
     .getCollection(params)
@@ -50,12 +48,11 @@ export const getFavoriteArticles = (req, res) => {
 
 // Добавить данного юзера в список лайков статьи
 export const addLikeArticle = (req, res) => {
-  const params = new Parameters(
-    "articles",
-    "articles",
-    { _id: ObjectId(req.body.articleId) },
-    { $push: { likes: req.body.userId } }
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    filter: { _id: ObjectId(req.body.articleId) },
+    operator: { $push: { likes: req.body.userId } },
+  });
 
   mongoClient
     .updateDocument(params)
@@ -69,12 +66,11 @@ export const addLikeArticle = (req, res) => {
 
 // Удалить данного юзера из списка лайков статьи
 export const deleteLikeArticle = (req, res) => {
-  const params = new Parameters(
-    "articles",
-    "articles",
-    { _id: ObjectId(req.body.articleId) },
-    { $pull: { likes: req.body.userId } }
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    filter: { _id: ObjectId(req.body.articleId) },
+    operator: { $pull: { likes: req.body.userId } },
+  });
 
   mongoClient
     .updateDocument(params)

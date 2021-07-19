@@ -1,9 +1,15 @@
+import { Filter } from "../models/Filters.js";
 import mongoClient from "../mongoDb/mongoClient.js";
-import { Parameters, Filter } from "../models/Filters.js";
+import MongoOptionsFactory from "../models/MongoOptions.js";
+
+const factory = new MongoOptionsFactory();
 
 // Получение всех фильтров для статьей
 export const getArticleFilters = (req, res) => {
-  const params = new Parameters("filters", "articles", {}, {});
+  const params = factory.createOptions({
+    database: "filters",
+    collection: "articles",
+  });
 
   mongoClient
     .getCollection(params)
@@ -20,7 +26,10 @@ export const getArticleFilters = (req, res) => {
 
 // Получение всех фильтров для курсов
 export const getCourseFilters = (req, res) => {
-  const params = new Parameters("filters", "courses", {}, {});
+  const params = factory.createOptions({
+    database: "filters",
+    collection: "courses",
+  });
 
   mongoClient
     .getCollection(params)

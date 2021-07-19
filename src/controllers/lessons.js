@@ -1,12 +1,17 @@
 import mongodb from "mongodb";
+import { Lesson } from "../models/Lessons.js";
 import mongoClient from "../mongoDb/mongoClient.js";
-import { Parameters, Lesson } from "../models/Lessons.js";
+import MongoOptionsFactory from "../models/MongoOptions.js";
 
 const { ObjectId } = mongodb;
+const factory = new MongoOptionsFactory();
 
 // Получение видеоуроков из указанной коллекции
 export const getCourseLessons = (req, res) => {
-  const params = new Parameters("lessons", req.query.courseName, {}, {});
+  const params = factory.createOptions({
+    database: "articles",
+    collection: req.query.courseName,
+  });
 
   mongoClient
     .getCollection(params)
@@ -23,12 +28,10 @@ export const getCourseLessons = (req, res) => {
 
 // Получение понравившехся видеоуроков из всех коллекций
 export const getFavoriteLessons = (req, res) => {
-  const params = new Parameters(
-    "lessons",
-    undefined,
-    { likes: req.query.userId },
-    {}
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    filter: { likes: req.query.userId },
+  });
 
   mongoClient
     .getDatabase(params)
@@ -45,12 +48,12 @@ export const getFavoriteLessons = (req, res) => {
 
 // Добавить данного юзера в список лайков видеоуроков
 export const addLikeLesson = (req, res) => {
-  const params = new Parameters(
-    "lessons",
-    req.body.courseName,
-    { _id: ObjectId(req.body.lessonId) },
-    { $push: { likes: req.body.userId } }
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    collection: req.body.courseName,
+    filter: { _id: ObjectId(req.body.lessonId) },
+    operator: { $push: { likes: req.body.userId } },
+  });
 
   mongoClient
     .updateDocument(params)
@@ -64,12 +67,12 @@ export const addLikeLesson = (req, res) => {
 
 // Удалить данного юзера из списка лайков видеоуроков
 export const deleteLikeLesson = (req, res) => {
-  const params = new Parameters(
-    "lessons",
-    req.body.courseName,
-    { _id: ObjectId(req.body.lessonId) },
-    { $pull: { likes: req.body.userId } }
-  );
+  const params = factory.createOptions({
+    database: "articles",
+    collection: req.body.courseName,
+    filter: { _id: ObjectId(req.body.lessonId) },
+    operator: { $pull: { likes: req.body.userId } },
+  });
 
   mongoClient
     .updateDocument(params)
