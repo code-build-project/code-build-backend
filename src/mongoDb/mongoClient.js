@@ -29,11 +29,11 @@ export default {
   },
 
   // Получение имена всех коллекций указанной базы данных
-  getCollectionNames(databaseName, parameters = {}) {
+  getCollectionNames(params) {
     return new Promise((resolve, reject) => {
       database
-        .db(databaseName)
-        .listCollections(parameters)
+        .db(params.database)
+        .listCollections({})
         .toArray((err, response) => {
           if (err) {
             reject(err);
@@ -45,12 +45,14 @@ export default {
   },
 
   // Получение содержимого всех коллекций указанной базы данных
-  async getDatabase(databaseName, parameters) {
-    let collectionNames = await this.getCollectionNames(databaseName);
+  async getDatabase(params) {
+    let collectionNames = await this.getCollectionNames(params);
     let allCollections = [];
 
-    for (var i = 0; i < collectionNames.length; i++) {
-      await this.getCollection(databaseName, collectionNames[i], parameters)
+    for (let i = 0; i < collectionNames.length; i++) {
+      params.collection = collectionNames[i];
+
+      await this.getCollection(params)
         .then((response) => {
           allCollections.push(...response);
         })
@@ -63,12 +65,12 @@ export default {
   },
 
   // Получение коллекции
-  getCollection(databaseName, collectionName, parameters) {
+  getCollection(params) {
     return new Promise((resolve, reject) => {
       database
-        .db(databaseName)
-        .collection(collectionName)
-        .find(parameters.filter)
+        .db(params.database)
+        .collection(params.collection)
+        .find(params.filter)
         .toArray((err, response) => {
           if (err) {
             reject(err);
@@ -80,20 +82,20 @@ export default {
   },
 
   // Получение одного документа из коллекции
-  getDocument(databaseName, collectionName, parameters) {
+  getDocument(params) {
     return database
-      .db(databaseName)
-      .collection(collectionName)
-      .findOne(parameters.key);
+      .db(params.database)
+      .collection(params.collection)
+      .findOne(params.filter);
   },
 
   // Добавление нового элемента в коллекцию
-  updateCollection(databaseName, collectionName, document) {
+  updateCollection(params) {
     return new Promise((resolve, reject) => {
       database
-        .db(databaseName)
-        .collection(collectionName)
-        .insertOne(document, (err, response) => {
+        .db(params.database)
+        .collection(params.collection)
+        .insertOne(params.newValue, (err, response) => {
           if (err) {
             reject(err);
           }
@@ -104,22 +106,18 @@ export default {
   },
 
   // Обновить документ коллекции
-  updateDocument(databaseName, collectionName, parameters) {
+  updateDocument(params) {
     return new Promise((resolve, reject) => {
       database
-        .db(databaseName)
-        .collection(collectionName)
-        .findOneAndUpdate(
-          parameters.key,
-          parameters.operator,
-          (err, response) => {
-            if (err) {
-              reject(err);
-            }
-
-            resolve(response);
+        .db(params.database)
+        .collection(params.collection)
+        .findOneAndUpdate(params.filter, params.operator, (err, response) => {
+          if (err) {
+            reject(err);
           }
-        );
+
+          resolve(response);
+        });
     });
   },
 };

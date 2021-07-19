@@ -1,50 +1,60 @@
 import mongodb from "mongodb";
 import mongoClient from "../mongoDb/mongoClient.js";
+import { Parameters, Lesson } from "../models/Lessons.js";
 
 const { ObjectId } = mongodb;
 
-class Parameters {
-  constructor(filter = {}, operator = {}) {
-    this.filter = filter;
-    this.operator = operator;
-  }
-}
-
 // Получение видеоуроков из указанной коллекции
 export const getCourseLessons = (req, res) => {
-  const parameters = new Parameters();
+  const params = new Parameters("lessons", req.query.courseName, {}, {});
 
-  mongoClient.getCollection('lessons', req.query.courseName, parameters)
-    .then(data => res.send(data))
+  mongoClient
+    .getCollection(params)
+    .then((data) => {
+      const lessons = data.map((item) => new Lesson(item));
+      res.send(lessons);
+    })
     .catch((err) => {
       res.status(401).json({
         message: `Ошибка: ${err}`,
       });
     });
-}
+};
 
-// Получение всех видеоуроков из всех коллекций
+// Получение понравившехся видеоуроков из всех коллекций
 export const getFavoriteLessons = (req, res) => {
-  const parameters = new Parameters({ likes: req.query.userId });
+  const params = new Parameters(
+    "lessons",
+    undefined,
+    { likes: req.query.userId },
+    {}
+  );
 
-  mongoClient.getDatabase('lessons', parameters)
-    .then(data => res.send(data))
+  mongoClient
+    .getDatabase(params)
+    .then((data) => {
+      const lessons = data.map((item) => new Lesson(item));
+      res.send(lessons);
+    })
     .catch((err) => {
       res.status(401).json({
         message: `Ошибка: ${err}`,
       });
     });
-}
+};
 
 // Добавить данного юзера в список лайков видеоуроков
 export const addLikeLesson = (req, res) => {
-  const parameters = new Parameters(
-    { _id:  ObjectId(req.body.lessonId) }, 
-    { $push: {likes: req.body.userId} }
+  const params = new Parameters(
+    "lessons",
+    req.body.courseName,
+    { _id: ObjectId(req.body.lessonId) },
+    { $push: { likes: req.body.userId } }
   );
 
-  mongoClient.updateDocument("lessons", req.body.courseName, parameters)
-    .then(data => res.send(data.value))
+  mongoClient
+    .updateDocument(params)
+    .then((data) => res.send(data.value))
     .catch((err) => {
       res.status(401).json({
         message: `Ошибка: ${err}`,
@@ -53,14 +63,17 @@ export const addLikeLesson = (req, res) => {
 };
 
 // Удалить данного юзера из списка лайков видеоуроков
-export const deleteLikeLesson = (lessonId, userId, collectionName) => {
-  const parameters = new Parameters(
-    { _id:  ObjectId(req.body.lessonId) }, 
-    { $pull: {likes: req.body.userId} }
+export const deleteLikeLesson = (req, res) => {
+  const params = new Parameters(
+    "lessons",
+    req.body.courseName,
+    { _id: ObjectId(req.body.lessonId) },
+    { $pull: { likes: req.body.userId } }
   );
 
-  mongoClient.updateDocument("lessons", req.body.courseName, parameters)
-    .then(data => res.send(data.value))
+  mongoClient
+    .updateDocument(params)
+    .then((data) => res.send(data.value))
     .catch((err) => {
       res.status(401).json({
         message: `Ошибка: ${err}`,

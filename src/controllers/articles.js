@@ -6,10 +6,16 @@ const { ObjectId } = mongodb;
 
 // Получение всех статьей
 export const getArticles = (req, res) => {
-  const parameters = new Parameters({ tags: req.query.tag });
+  const params = new Parameters(
+    "articles",
+    "articles",
+    { tags: req.query.tag },
+    {}
+  );
 
-  mongoClient.getCollection('articles', 'articles', parameters)
-    .then(data => {
+  mongoClient
+    .getCollection(params)
+    .then((data) => {
       const articles = data.map((item) => new Article(item));
       res.send(articles);
     })
@@ -18,32 +24,41 @@ export const getArticles = (req, res) => {
         message: `Ошибка: ${err}`,
       });
     });
-}
+};
 
 // Получение статьей которые лайкнул пользователь
 export const getFavoriteArticles = (req, res) => {
-  const parameters = new Parameters({ likes: req.query.userId });
+  const params = new Parameters(
+    "articles",
+    "articles",
+    { likes: req.query.userId },
+    {}
+  );
 
-  mongoClient.getCollection('articles', 'articles', parameters)
-    .then(data => {
+  mongoClient
+    .getCollection(params)
+    .then((data) => {
       const articles = data.map((item) => new Article(item));
       res.send(articles);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(401).json({
         message: `Ошибка: ${err}`,
       });
     });
-}
+};
 
 // Добавить данного юзера в список лайков статьи
 export const addLikeArticle = (req, res) => {
-  const parameters = new Parameters(
-    { _id: ObjectId(req.body.articleId) }, 
-    { $push: {likes: req.body.userId} },
+  const params = new Parameters(
+    "articles",
+    "articles",
+    { _id: ObjectId(req.body.articleId) },
+    { $push: { likes: req.body.userId } }
   );
 
-  mongoClient.updateDocument("articles", "articles", parameters)
+  mongoClient
+    .updateDocument(params)
     .then((response) => res.send(response.value))
     .catch((err) => {
       res.status(401).json({
@@ -54,12 +69,15 @@ export const addLikeArticle = (req, res) => {
 
 // Удалить данного юзера из списка лайков статьи
 export const deleteLikeArticle = (req, res) => {
-  const parameters = new Parameters(
-    { _id: ObjectId(req.body.articleId) }, 
-    { $pull: {likes: req.body.userId} },
+  const params = new Parameters(
+    "articles",
+    "articles",
+    { _id: ObjectId(req.body.articleId) },
+    { $pull: { likes: req.body.userId } }
   );
 
-  mongoClient.updateDocument("articles", "articles", parameters)
+  mongoClient
+    .updateDocument(params)
     .then((response) => res.send(response.value))
     .catch((err) => {
       res.status(401).json({

@@ -1,22 +1,23 @@
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import mongoClient from "../mongoDb/mongoClient.js";
+import { Parameters } from "../models/Reg.js";
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.yandex.ru',
+  host: "smtp.yandex.ru",
   port: 465,
   secure: true, // true for 465, false for other ports
   auth: {
-    user: 'code-build@yandex.ru',
-    pass: 'azwlcwvqvxncjfae',
+    user: "code-build@yandex.ru",
+    pass: "azwlcwvqvxncjfae",
   },
-})
+});
 
 let mail = {
   from: '"Codebuild" <code-build@yandex.ru>',
-  to: 'ya.sham@yandex.ru',
-  subject: 'Подтверждение регистрации',
-  html:`
+  to: "ya.sham@yandex.ru",
+  subject: "Подтверждение регистрации",
+  html: `
     <h2>Поздравляем! Вы успешно зарегестрировались на нашем сайте.</h2>
 
     <i>Данные вашей учетной записи:</i>
@@ -24,30 +25,26 @@ let mail = {
       <li>login: login</li>
       <li>password: password</li>
     </ul>
-  `
-}
-
-class Parameters {
-  constructor(filter = {}, operator = {}) {
-    this.filter = filter;
-    this.operator = operator;
-  }
-}
+  `,
+};
 
 // Регистрация
 export const registration = async (req, res) => {
-  const parameters = new Parameters({ email: req.body.email });
+  const params = new Parameters(
+    "users",
+    "users",
+    { email: req.body.email },
+    {}
+  );
 
-  const candidate = await mongoClient.getDocument('users', 'users', parameters);
+  const candidate = await mongoClient.getDocument(params);
 
   try {
     let result = await transporter.sendMail(mail);
-    res.status(201).json(result)
+    res.status(201).json(result);
+  } catch (err) {
+    res.status(404).json(err);
   }
-  catch(err) {
-    res.status(404).json(err)
-  }
-  
 
   // if (candidate) {
   //   // Пользователь существует, нужно отправить ошибку
@@ -56,7 +53,7 @@ export const registration = async (req, res) => {
   //   });
   // } else {
   //   // "соль" для хеширования пароля
-  //   const salt = bcrypt.genSaltSync(10); 
+  //   const salt = bcrypt.genSaltSync(10);
 
   //   // Новый пользователь с хешированым паролем
   //   const newUser = {
