@@ -43,20 +43,28 @@ class Users {
   }
 }
 
-export default class MongoOptionsFactory {
-  createOptions(options) {
-    switch (options.database) {
-      case 'articles':
-        return new Articles(options)
-      case 'courses':
-        return new Courses(options)
-      case 'filters':
-        return new Filters(options)
-      case 'lessons':
-        return new Lessons(options)
-      case 'users':
-        return new Users(options)
-    }
+class Reviews {
+  constructor() {
+    this.database = "reviews";
+    this.collection = "reviews";
   }
 }
 
+export default class MongoOptionsFactory {
+  createOptions(options) {
+    switch (options.database) {
+      case "articles":
+        return new Articles(options);
+      case "courses":
+        return new Courses(options);
+      case "filters":
+        return new Filters(options);
+      case "lessons":
+        return new Lessons(options);
+      case "users":
+        return new Users(options);
+      case "reviews":
+        return new Reviews(options);
+    }
+  }
+}
