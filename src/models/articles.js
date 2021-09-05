@@ -7,5 +7,6 @@ export class Article {
     this.views = article.views;
     this.tags = article.tags;
     this.likes = article.likes;
+    this.image = article.image;
   }
 }

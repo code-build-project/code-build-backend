@@ -9,7 +9,7 @@ const factory = new MongoOptionsFactory();
 // Получение видеоуроков из указанной коллекции
 export const getCourseLessons = (req, res) => {
   const params = factory.createOptions({
-    database: "articles",
+    database: "lessons",
     collection: req.query.courseName,
   });
 
@@ -29,7 +29,7 @@ export const getCourseLessons = (req, res) => {
 // Получение понравившехся видеоуроков из всех коллекций
 export const getFavoriteLessons = (req, res) => {
   const params = factory.createOptions({
-    database: "articles",
+    database: "lessons",
     filter: { likes: req.query.userId },
   });
 
@@ -49,7 +49,7 @@ export const getFavoriteLessons = (req, res) => {
 // Добавить данного юзера в список лайков видеоуроков
 export const addLikeLesson = (req, res) => {
   const params = factory.createOptions({
-    database: "articles",
+    database: "lessons",
     collection: req.body.courseName,
     filter: { _id: ObjectId(req.body.lessonId) },
     operator: { $push: { likes: req.body.userId } },
@@ -68,7 +68,7 @@ export const addLikeLesson = (req, res) => {
 // Удалить данного юзера из списка лайков видеоуроков
 export const deleteLikeLesson = (req, res) => {
   const params = factory.createOptions({
-    database: "articles",
+    database: "lessons",
     collection: req.body.courseName,
     filter: { _id: ObjectId(req.body.lessonId) },
     operator: { $pull: { likes: req.body.userId } },
