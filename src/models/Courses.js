@@ -9,5 +9,6 @@ export class Course {
     this.tags = course.tags;
     this.likes = course.likes;
     this.courseName = course.courseName;
+    this.image = course.image;
   }
 }
