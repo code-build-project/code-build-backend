@@ -17,31 +17,18 @@ const mongoClient = new MongoClient(keys.mongoURI, {
 
 export default {
   // Подключение к БД
-  connect() {
-    return new Promise((resolve, reject) => {
-      mongoClient.connect((err, response) => {
-        if (err) reject(err);
-
-        database = response;
-        resolve(response);
-      });
-    });
+  async connect() {
+    const response = await mongoClient.connect();
+    database = response;
+    return response;
   },
 
-  // Получение имена всех коллекций указанной базы данных
-  getCollectionNames(params) {
-    return new Promise((resolve, reject) => {
-      database
-        .db(params.database)
-        .listCollections({})
-        .toArray((err, response) => {
-          if (err) {
-            reject(err);
-          }
-
-          resolve(response.map((item) => item.name));
-        });
-    });
+  // Получение имен всех коллекций указанной базы данных
+  async getCollectionNames(params) {
+    const db = database.db(params.database);
+    const collection = db.listCollections({});
+    const response = await collection.toArray();
+    return response.map((item) => item.name);
   },
 
   // Получение содержимого всех коллекций указанной базы данных
@@ -66,58 +53,30 @@ export default {
 
   // Получение коллекции
   getCollection(params) {
-    return new Promise((resolve, reject) => {
-      database
-        .db(params.database)
-        .collection(params.collection)
-        .find(params.filter)
-        .toArray((err, response) => {
-          if (err) {
-            reject(err);
-          }
-
-          resolve(response);
-        });
-    });
+    this.getCollectionNames(params.database);
+    const db = database.db(params.database);
+    const collection = db.collection(params.collection);
+    return collection.find(params.filter).toArray();
   },
 
   // Получение одного документа из коллекции
   getDocument(params) {
-    return database
-      .db(params.database)
-      .collection(params.collection)
-      .findOne(params.filter);
+    const db = database.db(params.database);
+    const collection = db.collection(params.collection);
+    return collection.findOne(params.filter);
   },
 
   // Добавление нового элемента в коллекцию
   updateCollection(params) {
-    return new Promise((resolve, reject) => {
-      database
-        .db(params.database)
-        .collection(params.collection)
-        .insertOne(params.newValue, (err, response) => {
-          if (err) {
-            reject(err);
-          }
-
-          resolve(response);
-        });
-    });
+    const db = database.db(params.database);
+    const collection = db.collection(params.collection);
+    return collection.insertOne(params.newValue);
   },
 
   // Обновить документ коллекции
   updateDocument(params) {
-    return new Promise((resolve, reject) => {
-      database
-        .db(params.database)
-        .collection(params.collection)
-        .findOneAndUpdate(params.filter, params.operator, (err, response) => {
-          if (err) {
-            reject(err);
-          }
-
-          resolve(response);
-        });
-    });
+    const db = database.db(params.database);
+    const collection = db.collection(params.collection);
+    return collection.findOneAndUpdate(params.filter, params.operator);
   },
 };

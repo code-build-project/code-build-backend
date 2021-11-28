@@ -1,6 +1,6 @@
 export class Article {
   constructor(article) {
-    this._id = article._id;
+    this.id = article.id;
     this.title = article.title;
     this.date = article.date;
     this.time = article.time;
