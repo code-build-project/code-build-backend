@@ -53,7 +53,6 @@ export default {
 
   // Получение коллекции
   getCollection(params) {
-    this.getCollectionNames(params.database);
     const db = database.db(params.database);
     const collection = db.collection(params.collection);
     return collection.find(params.filter).toArray();

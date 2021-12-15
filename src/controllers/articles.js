@@ -5,7 +5,7 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 const factory = new MongoOptionsFactory();
 
 // Получение всех статьей
-export const getArticles = async (req, res) => {
+export const getArticleList = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
     filter: req.query.tag ? { tags: req.query.tag } : {},
@@ -39,7 +39,7 @@ export const getArticle = async (req, res) => {
 };
 
 // Получение статьей которые лайкнул пользователь
-export const getFavoriteArticles = async (req, res) => {
+export const getFavoriteArticleList = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
     filter: { likes: req.query.userId },

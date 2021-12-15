@@ -5,7 +5,7 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 const factory = new MongoOptionsFactory();
 
 // Получение всех курсов
-export const getCourses = async (req, res) => {
+export const getCourseList = async (req, res) => {
   const params = factory.createOptions({
     database: "courses",
     filter: req.query.tag ? { tags: req.query.tag } : {},
@@ -21,8 +21,25 @@ export const getCourses = async (req, res) => {
   }
 };
 
+// Получение одного курса по id
+export const getCourse = async (req, res) => {
+  const params = factory.createOptions({
+    database: "courses",
+    filter: { id: req.query.id },
+  });
+
+  try {
+    const response = await mongoClient.getDocument(params);
+    res.send(new Course(response));
+  } catch (err) {
+    res.status(401).json({
+      message: `Ошибка: ${err}`,
+    });
+  }
+};
+
 // Получение курсов которые лайкнул пользователь
-export const getFavoriteCourses = async (req, res) => {
+export const getFavoriteCourseList = async (req, res) => {
   const params = factory.createOptions({
     database: "courses",
     filter: { likes: req.query.userId },

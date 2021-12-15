@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { 
-  getCourses, 
-  getFavoriteCourses, 
+  getCourseList, 
+  getCourse,
+  getFavoriteCourseList, 
   addLikeCourse, 
   deleteLikeCourse 
 } from "../controllers/courses.js";
@@ -9,10 +10,13 @@ import {
 const router = Router();
 
 // Получение списка курсов, с фильтром по тегу 
-router.get("/courses", getCourses);
+router.get("/courses", getCourseList);
+
+// Получение однго курса по id
+router.get("/course", getCourse);
 
 // Получение курсов которые лайкнул пользователь
-router.get("/courses/favorites", getFavoriteCourses);
+router.get("/courses/favorites", getFavoriteCourseList);
 
 // Добавление в список лайков, нового юзера
 router.post("/courses/add-like", addLikeCourse);

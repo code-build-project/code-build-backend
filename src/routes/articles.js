@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { 
-  getArticles, 
+  getArticleList, 
   getArticle, 
-  getFavoriteArticles, 
+  getFavoriteArticleList, 
   addLikeArticle, 
   deleteLikeArticle 
 } from "../controllers/articles.js";
@@ -10,13 +10,13 @@ import {
 const router = Router();
 
 // Получение списка статьей, с фильрацией по тегу
-router.get("/articles", getArticles);
+router.get("/articles", getArticleList);
 
 // Получение одной статьи по id
 router.get("/article", getArticle);
 
 // Получение статей которые лайкнул пользователь
-router.get("/articles/favorites", getFavoriteArticles);
+router.get("/articles/favorites", getFavoriteArticleList);
 
 // Добавление в список лайков, нового юзера
 router.post("/articles/add-like", addLikeArticle);

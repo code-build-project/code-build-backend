@@ -1,6 +1,6 @@
 export class Lesson {
   constructor(lesson) {
-    this._id = lesson._id;
+    this.id = lesson.id;
     this.lessonNamuber = lesson.lessonNamuber;
     this.title = lesson.title;
     this.time = lesson.time;
