@@ -25,7 +25,7 @@ export const getCourseList = async (req, res) => {
 export const getCourse = async (req, res) => {
   const params = factory.createOptions({
     database: "courses",
-    filter: { id: req.query.id },
+    filter: { courseName: req.query.courseName },
   });
 
   try {
