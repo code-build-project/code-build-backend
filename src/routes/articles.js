@@ -4,7 +4,8 @@ import {
   getArticle, 
   getFavoriteArticleList, 
   addLikeArticle, 
-  deleteLikeArticle 
+  deleteLikeArticle,
+  getPopularArticleList
 } from "../controllers/articles.js";
 
 const router = Router();
@@ -23,5 +24,8 @@ router.post("/articles/add-like", addLikeArticle);
 
 // Удаление юзера из списка лайков
 router.post("/articles/delete-like", deleteLikeArticle);
+
+// Получение рандомных статьей
+router.get("/articles/popular-articles", getPopularArticleList);
 
 export default router;

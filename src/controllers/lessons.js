@@ -25,7 +25,7 @@ export const getCourseLessons = async (req, res) => {
 export const getFavoriteLessons = async (req, res) => {
   const params = factory.createOptions({
     database: "lessons",
-    filter: { likes: req.query.userId },
+    filter: { likes: req.headers.userId },
   });
 
   try {
@@ -44,7 +44,7 @@ export const addLikeLesson = async (req, res) => {
     database: "lessons",
     collection: req.body.courseName,
     filter: { id: req.body.lessonId },
-    operator: { $push: { likes: req.body.userId } },
+    operator: { $push: { likes: req.headers.userId } },
   });
 
   try {
@@ -63,7 +63,7 @@ export const deleteLikeLesson = async (req, res) => {
     database: "lessons",
     collection: req.body.courseName,
     filter: { id: req.body.lessonId },
-    operator: { $pull: { likes: req.body.userId } },
+    operator: { $pull: { likes: req.headers.userId } },
   });
 
   try {

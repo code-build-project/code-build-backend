@@ -58,6 +58,13 @@ export default {
     return collection.find(params.filter).toArray();
   },
 
+  // Получение рандомной коллекции
+  getRandomCollection(params) {
+    const db = database.db(params.database);
+    const collection = db.collection(params.collection);
+    return collection.aggregate([{$sample: {size: params.size}}]).toArray();
+  },
+
   // Получение одного документа из коллекции
   getDocument(params) {
     const db = database.db(params.database);

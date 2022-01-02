@@ -42,7 +42,7 @@ export const getArticle = async (req, res) => {
 export const getFavoriteArticleList = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
-    filter: { likes: req.query.userId },
+    filter: { likes: req.headers.userId },
   });
 
   try {
@@ -60,7 +60,7 @@ export const addLikeArticle = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
     filter: { id: req.body.articleId },
-    operator: { $push: { likes: req.body.userId } },
+    operator: { $push: { likes: req.headers.userId } },
   });
 
   try {
@@ -78,12 +78,33 @@ export const deleteLikeArticle = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
     filter: { id: req.body.articleId },
-    operator: { $pull: { likes: req.body.userId } },
+    operator: { $pull: { likes: req.headers.userId } },
   });
 
   try {
     const response = await mongoClient.updateDocument(params);
     res.send(response.value);
+  } catch (err) {
+    res.status(401).json({
+      message: `Ошибка: ${err}`,
+    });
+  }
+};
+
+// Получить популярные рекомендации по статьям
+export const getPopularArticleList = async (req, res) => {
+  const params = factory.createOptions({
+    database: "articles",
+    size: 3
+  });
+
+  try {
+    const response = await mongoClient.getRandomCollection(params);
+
+    let array = response.filter((item) => item.id !== req.query.id);
+    if (array.length > 3) array.pop();
+
+    res.send(array.map((item) => new Article(item)));
   } catch (err) {
     res.status(401).json({
       message: `Ошибка: ${err}`,

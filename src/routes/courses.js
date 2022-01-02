@@ -4,7 +4,8 @@ import {
   getCourse,
   getFavoriteCourseList, 
   addLikeCourse, 
-  deleteLikeCourse 
+  deleteLikeCourse,
+  getPopularCourseList
 } from "../controllers/courses.js";
 
 const router = Router();
@@ -23,5 +24,8 @@ router.post("/courses/add-like", addLikeCourse);
 
 // Удаление юзера из списка лайков
 router.post("/courses/delete-like", deleteLikeCourse);
+
+// Получение рандомных курсов
+router.get("/courses/popular-courses", getPopularCourseList);
 
 export default router;

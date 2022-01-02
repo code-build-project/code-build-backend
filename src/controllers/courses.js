@@ -42,7 +42,7 @@ export const getCourse = async (req, res) => {
 export const getFavoriteCourseList = async (req, res) => {
   const params = factory.createOptions({
     database: "courses",
-    filter: { likes: req.query.userId },
+    filter: { likes: req.headers.userId },
   });
 
   try {
@@ -60,7 +60,7 @@ export const addLikeCourse = async (req, res) => {
   const params = factory.createOptions({
     database: "courses",
     filter: { id: req.body.courseId },
-    operator: { $push: { likes: req.body.userId } },
+    operator: { $push: { likes: req.headers.userId } },
   });
 
   try {
@@ -78,12 +78,33 @@ export const deleteLikeCourse = async (req, res) => {
   const params = factory.createOptions({
     database: "courses",
     filter: { id: req.body.courseId },
-    operator: { $pull: { likes: req.body.userId } },
+    operator: { $pull: { likes: req.headers.userId } },
   });
 
   try {
     const response = await mongoClient.updateDocument(params);
     res.send(response.value);
+  } catch (err) {
+    res.status(401).json({
+      message: `Ошибка: ${err}`,
+    });
+  }
+};
+
+// Получить популярные рекомендации по курсам
+export const getPopularCourseList = async (req, res) => {
+  const params = factory.createOptions({
+    database: "courses",
+    size: 3,
+  });
+
+  try {
+    const response = await mongoClient.getRandomCollection(params);
+
+    let array = response.filter((item) => item.id !== req.query.id);
+    if (array.length > 3) array.pop();
+
+    res.send(array.map((item) => new Course(item)));
   } catch (err) {
     res.status(401).json({
       message: `Ошибка: ${err}`,

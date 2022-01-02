@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import keys from "./config/keys.js";
 import mongoClient from "./mongoDb/mongoClient.js";
+import authMiddleware from "./middleware/auth.js";
 
 const app = express();
 
@@ -13,6 +14,9 @@ app.use(cors());
 // Подключение функций для получения данных в формате json
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
+
+// Middleware
+app.use(authMiddleware)
 
 // Импорт и подключение роутов
 import reg from "./routes/reg.js";

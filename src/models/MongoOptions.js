@@ -6,6 +6,7 @@ class Articles {
     this.collection = "articles";
     this.filter = options.filter;
     this.operator = options.operator;
+    this.size = options.size;
   }
 }
 
@@ -15,6 +16,7 @@ class Courses {
     this.collection = "courses";
     this.filter = options.filter;
     this.operator = options.operator;
+    this.size = options.size;
   }
 }
 
