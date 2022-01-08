@@ -85,4 +85,11 @@ export default {
     const collection = db.collection(params.collection);
     return collection.findOneAndUpdate(params.filter, params.operator);
   },
+
+  // Добавить индекс времени жизни для документов
+  createIndex() {
+    const db = database.db('users');
+    const collection = db.collection('candidates');
+    collection.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 60 } );
+  }
 };

@@ -8,7 +8,7 @@ const factory = new MongoOptionsFactory();
 export const getCourseLessons = async (req, res) => {
   const params = factory.createOptions({
     database: "lessons",
-    collection: req.query.courseName,
+    collection: req.query.courseId,
   });
 
   try {
@@ -42,7 +42,7 @@ export const getFavoriteLessons = async (req, res) => {
 export const addLikeLesson = async (req, res) => {
   const params = factory.createOptions({
     database: "lessons",
-    collection: req.body.courseName,
+    collection: req.body.courseId,
     filter: { id: req.body.lessonId },
     operator: { $push: { likes: req.headers.userId } },
   });
@@ -61,7 +61,7 @@ export const addLikeLesson = async (req, res) => {
 export const deleteLikeLesson = async (req, res) => {
   const params = factory.createOptions({
     database: "lessons",
-    collection: req.body.courseName,
+    collection: req.body.courseId,
     filter: { id: req.body.lessonId },
     operator: { $pull: { likes: req.headers.userId } },
   });

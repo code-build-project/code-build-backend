@@ -39,7 +39,8 @@ class Lessons {
 class Users {
   constructor(options) {
     this.database = "users";
-    this.collection = "users";
+    this.collection = options.collection || "users";
+    this.newValue = options.newValue;
     this.filter = options.filter;
     this.operator = options.operator;
   }

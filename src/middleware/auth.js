@@ -8,13 +8,14 @@ export default (req, res, next) => {
     try {
       const user = jwt.verify(req.headers.authorization, keys.jwt);
       req.headers.userId = user.id;
-      return next();
+      next();
     } catch (err) {
       // Неверный токен, возвращаем ошибку
       res.status(401).json({
         message: `Ошибка: ${err}`,
       });
     }
+  } else {
+    next();
   }
-  next();
 };

@@ -23,9 +23,9 @@ export const login = async (req, res) => {
     if (password) {
       const token = jwt.sign(
         {
-          email: candidate.email,
-          id: candidate._id,
+          _id: candidate._id,
           name: candidate.name,
+          email: candidate.email,
           isPremium: candidate.isPremium,
         },
         keys.jwt,
@@ -39,14 +39,14 @@ export const login = async (req, res) => {
     // Пароли не совпали, ошибка
     else {
       res.status(401).json({
-        message: "Неправильный логин или пароль!",
+        message: "Неправильный пароль!",
       });
     }
   }
   // Пользователя нет, ошибка
   else {
-    res.status(404).json({
-      message: "Неправильный логин или пароль!",
+    res.status(401).json({
+      message: "Пользователь с таким e-mail не зарегистрирован.",
     });
   }
 };
