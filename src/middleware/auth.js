@@ -7,7 +7,7 @@ export default (req, res, next) => {
     //Токен валидный, передаём запрос дальше
     try {
       const user = jwt.verify(req.headers.authorization, keys.jwt);
-      req.headers.userId = user.id;
+      req.headers.userId = user._id;
       next();
     } catch (err) {
       // Неверный токен, возвращаем ошибку
