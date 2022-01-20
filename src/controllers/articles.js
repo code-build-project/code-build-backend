@@ -15,9 +15,7 @@ export const getArticleList = async (req, res) => {
     const response = await mongoClient.getCollection(params);
     res.send(response.map((item) => new Article(item)));
   } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(500).json(err);
   }
 };
 
@@ -32,9 +30,7 @@ export const getArticle = async (req, res) => {
     const response = await mongoClient.getDocument(params);
     res.send(new Article(response));
   } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(500).json(err);
   }
 };
 
@@ -49,9 +45,7 @@ export const getFavoriteArticleList = async (req, res) => {
     const response = await mongoClient.getCollection(params);
     res.send(response.map((item) => new Article(item)));
   } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(500).json(err);
   }
 };
 
@@ -67,9 +61,7 @@ export const addLikeArticle = async (req, res) => {
     const response = await mongoClient.updateDocument(params);
     res.send(response.value);
   } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(500).json(err);
   }
 };
 
@@ -85,9 +77,7 @@ export const deleteLikeArticle = async (req, res) => {
     const response = await mongoClient.updateDocument(params);
     res.send(response.value);
   } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(500).json(err);
   }
 };
 
@@ -95,7 +85,7 @@ export const deleteLikeArticle = async (req, res) => {
 export const getPopularArticleList = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
-    size: 3
+    size: 3,
   });
 
   try {
@@ -106,8 +96,6 @@ export const getPopularArticleList = async (req, res) => {
 
     res.send(array.map((item) => new Article(item)));
   } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(500).json(err);
   }
 };

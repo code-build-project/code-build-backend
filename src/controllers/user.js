@@ -16,9 +16,7 @@ export const getUser = (req, res) => {
     res.status(200).json(new User(decoded));
   } catch (err) {
     // Неверный токен, возвращаем ошибку
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
+    res.status(401).json(err);
   }
 };
 

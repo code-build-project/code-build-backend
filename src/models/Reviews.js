@@ -5,5 +5,6 @@ export class Review {
     this.text = review.text;
     this.name = review.name;
     this.date = review.date; 
+    this.image = review.image; 
   }
 }

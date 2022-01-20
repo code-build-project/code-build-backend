@@ -11,9 +11,7 @@ export default (req, res, next) => {
       next();
     } catch (err) {
       // Неверный токен, возвращаем ошибку
-      res.status(401).json({
-        message: `Ошибка: ${err}`,
-      });
+      res.status(401).json(err);
     }
   } else {
     next();

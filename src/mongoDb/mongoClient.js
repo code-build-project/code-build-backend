@@ -90,6 +90,6 @@ export default {
   createIndex() {
     const db = database.db('users');
     const collection = db.collection('candidates');
-    collection.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 60 } );
+    return collection.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 40 } );
   }
 };

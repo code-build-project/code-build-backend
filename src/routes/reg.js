@@ -1,19 +1,12 @@
 import { Router } from "express";
-import {
-  registration,
-  completionRegistration,
-  recovery,
-} from "../controllers/reg.js";
+import registration from "../controllers/reg.js";
 
 const router = Router();
 
 // Регистрация
-router.post("/sign", registration);
+router.post("/sign", registration.create);
 
 // Подтверждение регистрации
-router.post("/completion-registration", completionRegistration);
-
-// Восстановление пароля
-router.post("/recovery-password", recovery);
+router.post("/completion-registration", registration.confirm);
 
 export default router;
