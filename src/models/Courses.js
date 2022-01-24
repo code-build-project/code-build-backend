@@ -8,7 +8,6 @@ export class Course {
     this.time = course.time;
     this.views = course.views;
     this.tags = course.tags;
-    this.likes = course.likes;
     this.image = course.image;
   }
 }

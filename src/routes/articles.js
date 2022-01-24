@@ -2,9 +2,7 @@ import { Router } from "express";
 import { 
   getArticleList, 
   getArticle, 
-  getFavoriteArticleList, 
-  addLikeArticle, 
-  deleteLikeArticle,
+  getFavoriteArticleList,
   getPopularArticleList
 } from "../controllers/articles.js";
 
@@ -18,12 +16,6 @@ router.get("/article", getArticle);
 
 // Получение статей которые лайкнул пользователь
 router.get("/articles/favorites", getFavoriteArticleList);
-
-// Добавление в список лайков, нового юзера
-router.post("/articles/add-like", addLikeArticle);
-
-// Удаление юзера из списка лайков
-router.post("/articles/delete-like", deleteLikeArticle);
 
 // Получение рандомных статьей
 router.get("/articles/popular-articles", getPopularArticleList);

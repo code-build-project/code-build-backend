@@ -40,7 +40,7 @@ class Users {
   constructor(options) {
     this.database = "users";
     this.collection = options.collection || "users";
-    this.newValue = options.newValue;
+    this.newDocument = options.newDocument;
     this.filter = options.filter;
     this.operator = options.operator;
   }
@@ -50,6 +50,16 @@ class Reviews {
   constructor() {
     this.database = "reviews";
     this.collection = "reviews";
+  }
+}
+
+class Likes {
+  constructor(options) {
+    this.database = "likes";
+    this.collection = options.collection;
+    this.filter = options.filter;
+    this.operator = options.operator;
+    this.upsert = true;
   }
 }
 
@@ -68,6 +78,8 @@ export default class MongoOptionsFactory {
         return new Users(options);
       case "reviews":
         return new Reviews(options);
+      case "likes":
+        return new Likes(options);
     }
   }
 }

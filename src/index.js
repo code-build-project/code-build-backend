@@ -13,15 +13,16 @@ app.use(cors());
 
 // Подключение функций для получения данных в формате json
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 
 // Middleware
-app.use(authMiddleware)
+app.use(authMiddleware);
 
 // Импорт и подключение роутов
 import reg from "./routes/reg.js";
 import auth from "./routes/auth.js";
-import user from "./routes/user.js";
+import users from "./routes/users.js";
+import likes from "./routes/likes.js";
 import reviews from "./routes/reviews.js";
 import courses from "./routes/courses.js";
 import lessons from "./routes/lessons.js";
@@ -29,15 +30,16 @@ import articles from "./routes/articles.js";
 
 app.use(reg);
 app.use(auth);
-app.use(user);
+app.use(users);
+app.use(likes);
 app.use(reviews);
 app.use(courses);
 app.use(lessons);
 app.use(articles);
 
-
 // Запуск сервера
-mongoClient.connect()
+mongoClient
+  .connect()
   .then(() => {
     app.listen(PORT, "127.0.1.1");
     console.log("Сервер запустился...");

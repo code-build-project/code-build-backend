@@ -55,42 +55,6 @@ export const getFavoriteCourseList = async (req, res) => {
   }
 };
 
-// Добавить данного юзера в список лайков курса
-export const addLikeCourse = async (req, res) => {
-  const params = factory.createOptions({
-    database: "courses",
-    filter: { id: req.body.courseId },
-    operator: { $push: { likes: req.headers.userId } },
-  });
-
-  try {
-    const response = await mongoClient.updateDocument(params);
-    res.send(response.value);
-  } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
-  }
-};
-
-// Удалить данного юзера из списка лайков курса
-export const deleteLikeCourse = async (req, res) => {
-  const params = factory.createOptions({
-    database: "courses",
-    filter: { id: req.body.courseId },
-    operator: { $pull: { likes: req.headers.userId } },
-  });
-
-  try {
-    const response = await mongoClient.updateDocument(params);
-    res.send(response.value);
-  } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
-    });
-  }
-};
-
 // Получить популярные рекомендации по курсам
 export const getPopularCourseList = async (req, res) => {
   const params = factory.createOptions({

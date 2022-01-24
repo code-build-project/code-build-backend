@@ -6,7 +6,6 @@ export class Lesson {
     this.time = lesson.time;
     this.views = lesson.views;
     this.courseId = lesson.courseId;
-    this.likes = lesson.likes;
     this.image = lesson.image;
     this.video = lesson.video;
   }

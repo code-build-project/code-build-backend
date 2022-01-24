@@ -1,7 +1,7 @@
 import mongodb from "mongodb";
 import jwt from "jsonwebtoken";
 import keys from "../config/keys.js";
-import { User } from "../models/User.js";
+import { User } from "../models/Users.js";
 import mongoClient from "../mongoDb/mongoClient.js";
 import MongoOptionsFactory from "../models/MongoOptions.js";
 
@@ -9,11 +9,18 @@ const { ObjectId } = mongodb;
 const factory = new MongoOptionsFactory();
 
 // Получение данных пользователя по токену
-export const getUser = (req, res) => {
+export const getUser = async (req, res) => {
   //Токен валидный, возвращаем данные пользователя
   try {
     const decoded = jwt.verify(req.headers.authorization, keys.jwt);
-    res.status(200).json(new User(decoded));
+
+    const params = factory.createOptions({
+      database: "users",
+      filter: { email: decoded.email },
+    });
+
+    const user = await mongoClient.getDocument(params);
+    res.status(200).json(new User(user));
   } catch (err) {
     // Неверный токен, возвращаем ошибку
     res.status(401).json(err);
@@ -34,23 +41,7 @@ export const changeUserName = async (req, res) => {
 
   try {
     let response = await mongoClient.updateDocument(params);
-    response = new User(response.value);
-
-    // Генерация нового токена
-    const token = jwt.sign(
-      {
-        _id: response.id,
-        name: req.body.name,
-        email: response.email,
-        isPremium: response.isPremium,
-      },
-      keys.jwt,
-      { expiresIn: 3600 }
-    );
-
-    res.status(200).json({
-      token: `Bearer ${token}`,
-    });
+    res.status(200).json(new User(response.value));
   } catch (err) {
     res.status(401).json({
       message: `Ошибка: ${err}`,

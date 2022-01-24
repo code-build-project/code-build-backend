@@ -62,7 +62,7 @@ export default {
   getRandomCollection(params) {
     const db = database.db(params.database);
     const collection = db.collection(params.collection);
-    return collection.aggregate([{$sample: {size: params.size}}]).toArray();
+    return collection.aggregate([{ $sample: { size: params.size } }]).toArray();
   },
 
   // Получение одного документа из коллекции
@@ -76,20 +76,22 @@ export default {
   updateCollection(params) {
     const db = database.db(params.database);
     const collection = db.collection(params.collection);
-    return collection.insertOne(params.newValue);
+    return collection.insertOne(params.newDocument);
   },
 
   // Обновить документ коллекции
   updateDocument(params) {
+    const { filter, operator, upsert } = params;
+
     const db = database.db(params.database);
     const collection = db.collection(params.collection);
-    return collection.findOneAndUpdate(params.filter, params.operator);
+    return collection.findOneAndUpdate(filter, operator, { upsert: upsert });
   },
 
   // Добавить индекс времени жизни для документов
   createIndex() {
-    const db = database.db('users');
-    const collection = db.collection('candidates');
-    return collection.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 40 } );
-  }
+    const db = database.db("users");
+    const collection = db.collection("candidates");
+    return collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 40 });
+  },
 };

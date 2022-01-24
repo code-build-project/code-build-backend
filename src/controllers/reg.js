@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import keys from "../config/keys.js";
+import validate from "../validates/reg.js";
 import mongoClient from "../mongoDb/mongoClient.js";
 import { generatePassword } from "../helpers/generate.js";
 import MongoOptionsFactory from "../models/MongoOptions.js";
@@ -8,51 +9,29 @@ import { sendMail } from "../nodemailer/transporterMail.js";
 
 const factory = new MongoOptionsFactory();
 
-// Отправка кода подтверждения на почту и занесения нового пользователя в кандидаты
+// Отправка пароля подтверждения на почту и занесения нового пользователя в кандидаты
 const create = async (req, res) => {
   try {
-    // Проверка существования пользователя
     const paramsUser = factory.createOptions({
       database: "users",
       filter: { email: req.body.email },
     });
 
-    const user = await mongoClient.getDocument(paramsUser);
-
-    if (user) {
-      const err = {
-        name: "IncorrectEmail",
-        message: "Пользователь с таким e-mail уже зарегистрирован.",
-      };
-      return res.status(401).json(err);
-    }
-
-    // Проверка отправки пароля на данный email ранее
     const paramsCandidate = factory.createOptions({
       database: "users",
       collection: "candidates",
       filter: { email: req.body.email },
     });
 
+    const user = await mongoClient.getDocument(paramsUser);
     const candidate = await mongoClient.getDocument(paramsCandidate);
 
-    if (candidate) {
-      const err = {
-        name: "IncorrectEmail",
-        message: "Срок действия предыдущего пароля еще не истек.",
-      };
-      return res.status(409).json(err);
-    }
+    // Проверки
+    const err = validate.create(user, candidate);
+    if (err) return res.status(err.status).json(err.data);
 
     // Генерация пароля и отправка на почту пользователя
     const password = generatePassword();
-
-    const newCandidate = {
-      name: req.body.name,
-      email: req.body.email,
-      password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
-      createdAt: new Date(),
-    };
 
     const info = {
       to: req.body.email,
@@ -63,10 +42,17 @@ const create = async (req, res) => {
 
     await sendMail(info);
 
+    const newCandidate = {
+      name: req.body.name,
+      email: req.body.email,
+      password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
+      createdAt: new Date(),
+    };
+
     const paramsNewCandidate = factory.createOptions({
       database: "users",
       collection: "candidates",
-      newValue: newCandidate,
+      newDocument: newCandidate,
     });
 
     await mongoClient.createIndex();
@@ -89,51 +75,17 @@ const confirm = async (req, res) => {
       filter: { email: req.body.email },
     });
 
-    const candidate = await mongoClient.getDocument(paramsCandidate);
-
-    if (!candidate) {
-      const err = {
-        name: "IncorrectPassword",
-        message: "Время подтверждения регистрации истекло.",
-      };
-      return res.status(401).json(err);
-    }
-
-    // Проверка на пустое значение пароля
-    if (!req.body.password) {
-      const err = {
-        name: "IncorrectPassword",
-        message: "Значение пароля не должно быть пустым.",
-      };
-      return res.status(400).json(err);
-    }
-
-    // Проверка на совпадение пароля от клинета и пароля в БД кандадатов
-    const password = bcrypt.compareSync(req.body.password, candidate.password);
-
-    if (!password) {
-      const err = {
-        name: "IncorrectPassword",
-        message: "Неправильный пароль.",
-      };
-      return res.status(401).json(err);
-    }
-
-    // Проверка на существования пользователя в БД
     const paramsUser = factory.createOptions({
       database: "users",
-      filter: { email: candidate.email },
+      filter: { email: req.body.email },
     });
 
+    const candidate = await mongoClient.getDocument(paramsCandidate);
     const user = await mongoClient.getDocument(paramsUser);
 
-    if (user) {
-      const err = {
-        name: "IncorrectEmail",
-        message: "Такой e-mail уже зарегестрирован.",
-      };
-      return res.status(409).json(err);
-    }
+    // Проверки
+    const err = validate.confirm(candidate, req, user);
+    if (err) return res.status(err.status).json(err.data);
 
     // Добавление нового пользователя в БД и возвращение токена клиенту
     const newUser = {
@@ -145,7 +97,7 @@ const confirm = async (req, res) => {
 
     const params = factory.createOptions({
       database: "users",
-      newValue: newUser,
+      newDocument: newUser,
     });
 
     await mongoClient.updateCollection(params);

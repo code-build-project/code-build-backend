@@ -49,38 +49,6 @@ export const getFavoriteArticleList = async (req, res) => {
   }
 };
 
-// Добавить данного юзера в список лайков статьи
-export const addLikeArticle = async (req, res) => {
-  const params = factory.createOptions({
-    database: "articles",
-    filter: { id: req.body.articleId },
-    operator: { $push: { likes: req.headers.userId } },
-  });
-
-  try {
-    const response = await mongoClient.updateDocument(params);
-    res.send(response.value);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
-// Удалить данного юзера из списка лайков статьи
-export const deleteLikeArticle = async (req, res) => {
-  const params = factory.createOptions({
-    database: "articles",
-    filter: { id: req.body.articleId },
-    operator: { $pull: { likes: req.headers.userId } },
-  });
-
-  try {
-    const response = await mongoClient.updateDocument(params);
-    res.send(response.value);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
 // Получить популярные рекомендации по статьям
 export const getPopularArticleList = async (req, res) => {
   const params = factory.createOptions({
