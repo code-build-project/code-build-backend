@@ -7,6 +7,6 @@ const router = Router();
 router.post("/sign", registration.create);
 
 // Подтверждение регистрации
-router.post("/completion-registration", registration.confirm);
+router.post("/confirm-sign", registration.confirm);
 
 export default router;
