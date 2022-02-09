@@ -40,13 +40,21 @@ export const getCourse = async (req, res) => {
 
 // Получение курсов которые лайкнул пользователь
 export const getFavoriteCourseList = async (req, res) => {
-  const params = factory.createOptions({
-    database: "courses",
-    filter: { likes: req.headers.userId },
+  const paramsLikes = factory.createOptions({
+    database: "likes",
+    collection: "courses",
+    filter: { userId: req.headers.userId },
   });
 
   try {
-    const response = await mongoClient.getCollection(params);
+    const { likes } = await mongoClient.getDocument(paramsLikes);
+
+    const paramsCourses = factory.createOptions({
+      database: "courses",
+      filter: { id: { $in: likes } },
+    });
+
+    const response = await mongoClient.getCollection(paramsCourses);
     res.send(response.map((item) => new Course(item)));
   } catch (err) {
     res.status(401).json({

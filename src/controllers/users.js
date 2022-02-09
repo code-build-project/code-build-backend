@@ -1,7 +1,9 @@
+import bcrypt from "bcryptjs";
 import mongodb from "mongodb";
 import jwt from "jsonwebtoken";
 import keys from "../config/keys.js";
 import { User } from "../models/Users.js";
+import validate from "../validates/user.js";
 import mongoClient from "../mongoDb/mongoClient.js";
 import MongoOptionsFactory from "../models/MongoOptions.js";
 
@@ -51,5 +53,39 @@ export const changeUserName = async (req, res) => {
     });
   } catch (err) {
     res.status(401).json(err);
+  }
+};
+
+// Изменить пароль пользователя
+export const changeUserPassword = async (req, res) => {
+  const paramsUser = factory.createOptions({
+    database: "users",
+    filter: { _id: ObjectId(req.headers.userId) },
+  });
+
+  const paramsUserChanges = factory.createOptions({
+    database: "users",
+    filter: { _id: ObjectId(req.headers.userId) },
+    operator: {
+      $set: {
+        password: bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10)),
+      },
+    },
+  });
+
+  try {
+    const user = await mongoClient.getDocument(paramsUser);
+
+    // Проверки
+    const err = validate.changeUserPassword(user, req);
+    if (err) return res.status(err.status).json(err.data);
+
+    await mongoClient.updateDocument(paramsUserChanges);
+
+    res.status(200).json({
+      message: "Пароль изменен!",
+    });
+  } catch (err) {
+    res.status(500).json(err);
   }
 };

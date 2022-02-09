@@ -23,13 +23,21 @@ export const getCourseLessons = async (req, res) => {
 
 // Получение понравившехся видеоуроков из всех коллекций
 export const getFavoriteLessons = async (req, res) => {
-  const params = factory.createOptions({
-    database: "lessons",
-    filter: { likes: req.headers.userId },
+  const paramsLikes = factory.createOptions({
+    database: "likes",
+    collection: "lessons",
+    filter: { userId: req.headers.userId },
   });
 
   try {
-    const response = await mongoClient.getDatabase(params);
+    const { likes } = await mongoClient.getDocument(paramsLikes);
+
+    const paramsLessons = factory.createOptions({
+      database: "lessons",
+      filter: { id: { $in: likes } },
+    });
+
+    const response = await mongoClient.getDatabase(paramsLessons);
     res.send(response.map((item) => new Lesson(item)));
   } catch (err) {
     res.status(401).json({

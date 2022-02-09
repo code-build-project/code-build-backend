@@ -4,6 +4,7 @@ import keys from "../config/keys.js";
 const accessRoutes = [
   "/user",
   "/user/change-name",
+  "/user/change-password",
   "/likes",
   "/likes/add",
   "/likes/delete",

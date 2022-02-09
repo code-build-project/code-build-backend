@@ -36,13 +36,21 @@ export const getArticle = async (req, res) => {
 
 // Получение статьей которые лайкнул пользователь
 export const getFavoriteArticleList = async (req, res) => {
-  const params = factory.createOptions({
-    database: "articles",
-    filter: { likes: req.headers.userId },
+  const paramsLikes = factory.createOptions({
+    database: "likes",
+    collection: "articles",
+    filter: { userId: req.headers.userId },
   });
 
   try {
-    const response = await mongoClient.getCollection(params);
+    const { likes } = await mongoClient.getDocument(paramsLikes);
+
+    const paramsArticles = factory.createOptions({
+      database: "articles",
+      filter: { id: { $in: likes } },
+    });
+
+    const response = await mongoClient.getCollection(paramsArticles);
     res.send(response.map((item) => new Article(item)));
   } catch (err) {
     res.status(500).json(err);
