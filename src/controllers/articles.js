@@ -43,7 +43,7 @@ export const getFavoriteArticleList = async (req, res) => {
   });
 
   try {
-    const { likes } = await mongoClient.getDocument(paramsLikes);
+    const { likes = [] } = await mongoClient.getDocument(paramsLikes) || {};
 
     const paramsArticles = factory.createOptions({
       database: "articles",
@@ -53,6 +53,7 @@ export const getFavoriteArticleList = async (req, res) => {
     const response = await mongoClient.getCollection(paramsArticles);
     res.send(response.map((item) => new Article(item)));
   } catch (err) {
+    console.log(err)
     res.status(500).json(err);
   }
 };

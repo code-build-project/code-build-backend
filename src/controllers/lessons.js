@@ -30,7 +30,7 @@ export const getFavoriteLessons = async (req, res) => {
   });
 
   try {
-    const { likes } = await mongoClient.getDocument(paramsLikes);
+    const { likes = [] } = await mongoClient.getDocument(paramsLikes) || {};
 
     const paramsLessons = factory.createOptions({
       database: "lessons",

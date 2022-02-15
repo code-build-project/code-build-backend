@@ -47,7 +47,7 @@ export const getFavoriteCourseList = async (req, res) => {
   });
 
   try {
-    const { likes } = await mongoClient.getDocument(paramsLikes);
+    const { likes = [] } = await mongoClient.getDocument(paramsLikes) || {};
 
     const paramsCourses = factory.createOptions({
       database: "courses",
