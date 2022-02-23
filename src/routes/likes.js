@@ -3,7 +3,7 @@ import { getLikeList, addLike, deleteLike } from "../controllers/likes.js";
 
 const router = Router();
 
-// Получение одной статьи по id
+// Получение списка лайков для юзера
 router.get("/likes", getLikeList);
 
 // Добавление в список лайков id карточки
