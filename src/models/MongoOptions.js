@@ -43,6 +43,7 @@ class Users {
     this.newDocument = options.newDocument;
     this.filter = options.filter;
     this.operator = options.operator;
+    this.lifeTime = options.lifeTime;
   }
 }
 

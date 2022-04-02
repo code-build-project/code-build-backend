@@ -27,7 +27,7 @@ const create = async (req, res) => {
     const candidate = await mongoClient.getDocument(paramsCandidate);
 
     // Проверки
-    const err = validate.create(user, candidate);
+    const err = validate.create(user, candidate, req);
     if (err) return res.status(err.status).json(err.data);
 
     // Генерация пароля и отправка на почту пользователя
@@ -42,6 +42,12 @@ const create = async (req, res) => {
 
     await sendMail(info);
 
+    const paramsIndexCandidate = factory.createOptions({
+      database: "users",
+      collection: "candidates",
+      lifeTime: 40,
+    });
+    
     const newCandidate = {
       name: req.body.name,
       email: req.body.email,
@@ -55,7 +61,7 @@ const create = async (req, res) => {
       newDocument: newCandidate,
     });
 
-    await mongoClient.createIndex();
+    await mongoClient.createIndex(paramsIndexCandidate);
     await mongoClient.updateCollection(paramsNewCandidate);
 
     const message = "Пароль для активации аккаунта отправлен на почту.";
@@ -84,7 +90,7 @@ const confirm = async (req, res) => {
     const user = await mongoClient.getDocument(paramsUser);
 
     // Проверки
-    const err = validate.confirm(candidate, req, user);
+    const err = validate.confirm(user, candidate, req);
     if (err) return res.status(err.status).json(err.data);
 
     // Добавление нового пользователя в БД и возвращение токена клиенту

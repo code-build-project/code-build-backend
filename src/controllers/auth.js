@@ -19,7 +19,7 @@ const login = async (req, res) => {
     const user = await mongoClient.getDocument(params);
 
     // Проверки
-    const err = validate.login(req, user);
+    const err = validate.login(user, req);
     if (err) return res.status(err.status).json(err.data);
 
     // Отправка сгенерированного токена
@@ -52,7 +52,7 @@ const recovery = async (req, res) => {
     const user = await mongoClient.getDocument(paramsUser);
 
     // Проверки
-    const err = validate.recovery(user);
+    const err = validate.recovery(user, req);
     if (err) return res.status(err.status).json(err.data);
 
     // Запись нового пароля в БД и отправка на почту пользователя

@@ -88,10 +88,10 @@ export default {
     return collection.findOneAndUpdate(filter, operator, { upsert: upsert });
   },
 
-  // Добавить индекс времени жизни для документов
-  createIndex() {
-    const db = database.db("users");
-    const collection = db.collection("candidates");
-    return collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 40 });
+  // Добавить в коллекцию индекс времени жизни для документов
+  createIndex(params) {
+    const db = database.db(params.database);
+    const collection = db.collection(params.collection);
+    return collection.createIndex({ createdAt: 1 }, { expireAfterSeconds: params.lifeTime });
   },
 };

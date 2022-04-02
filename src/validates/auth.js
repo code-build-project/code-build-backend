@@ -1,52 +1,41 @@
 import bcrypt from "bcryptjs";
+import { MessageError } from "../models/Responses.js";
 
-export const login = (req, user) => {
+const regexEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+export const login = (user, req) => {
+  // Проверка на правильный формат email
+  if (!regexEmail.test(req.body.email)) {
+    return new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
+  }
+
   // Проверка существования пользователя
   if (!user) {
-    return {
-      data: {
-        name: "IncorrectEmail",
-        message: "Пользователь с таким e-mail не зарегистрирован.",
-      },
-      status: 401,
-    };
+    return new MessageError('IncorrectEmail', 'Пользователь с таким e-mail не зарегистрирован.', 401);
   }
 
   // Проверка на пустое значение пароля
   if (!req.body.password) {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Поле пароля не должно быть пустым.",
-      },
-      status: 400,
-    };
+    return new MessageError('IncorrectPassword', 'Поле пароля не может быть пустым.', 400);
   }
 
   // Проверка на совпадение пароля от клинета и пароля в БД
   const password = bcrypt.compareSync(req.body.password, user.password);
 
   if (!password) {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Неправильный пароль!",
-      },
-      status: 401,
-    };
+    return new MessageError('IncorrectPassword', 'Неправильный пароль!', 401);
   }
 };
 
-const recovery = (user) => {
+const recovery = (user, req) => {
+  // Проверка на правильный формат email
+  if (!regexEmail.test(req.body.email)) {
+    return new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
+  }
+  
   // Проверка существования пользователя
   if (!user) {
-    return {
-      data: {
-        name: "IncorrectEmail",
-        message: "Пользователь с таким e-mail не зарегистрирован.",
-      },
-      status: 401,
-    };
+    return new MessageError('IncorrectEmail', 'Пользователь с таким e-mail не зарегистрирован.', 401);
   }
 };
 

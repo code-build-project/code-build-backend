@@ -1,75 +1,73 @@
 import bcrypt from "bcryptjs";
+import { MessageError } from "../models/Responses.js";
+
+const regexName = /^[a-zа-яё\-]+$/i;
+const regexPassword = /^[a-zа-яё0-9-_!@#$%^&*()=+`~?]+$/;
+
+const changeUserName = (user, req) => {
+  // Проверка существования кандидата в БД
+  if (!user) {
+    return new MessageError('IncorrectEmail', 'Пользователь с таким e-mail не зарегистрирован.', 401);
+  }
+
+  // Проверка на пустое значение поля name
+  if (!req.body.name) {
+    return new MessageError('IncorrectName', 'Поле name не может быть пустым.', 400);
+  }
+
+  // Проверка на правильный формат name
+  if (!regexName.test(req.body.name)) {
+    return new MessageError('IncorrectName', 'Поле name содержит недопустимые символы.', 400);
+  }
+
+  // Проверка максимального количества символов name
+  if (req.body.name.length > 20) {
+    return new MessageError('IncorrectName', 'Поле name не может быть больше 20 символов.', 400);
+  }
+}
 
 const changeUserPassword = (user, req) => {
   // Проверка существования кандидата в БД
   if (!user) {
-    return {
-      data: {
-        name: "IncorrectEmail",
-        message: "Пользователь с таким e-mail не зарегистрирован.",
-      },
-      status: 401,
-    };
+    return new MessageError('IncorrectEmail', 'Пользователь с таким e-mail не зарегистрирован.', 401);
   }
 
   // Проверка на пустое значение пароля
   if (!req.body.oldPassword) {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Значение пароля не должно быть пустым.",
-      },
-      status: 400,
-    };
+    return new MessageError('IncorrectPassword', 'Значение пароля не должно быть пустым.', 400);
   }
 
   // Проверка на совпадение пароля от клинета и пароля в БД кандадатов
   const password = bcrypt.compareSync(req.body.oldPassword, user.password);
 
   if (!password) {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Неправильный пароль.",
-      },
-      status: 401,
-    };
+    return new MessageError('IncorrectPassword', 'Неправильный пароль.', 401);
   }
 
   // Проверка минимального количества символов нового пароля
   if (req.body.newPassword.length < 8) {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Пароль не может быть меньше 8 символов.",
-      },
-      status: 400,
-    };
+    return new MessageError('IncorrectPassword', 'Поле newPassword не может быть меньше 8 символов.', 400);
   }
 
   // Проверка максимального количества символов нового пароля
   if (req.body.newPassword.length > 12) {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Пароль не может быть больше 12 символов.",
-      },
-      status: 400,
-    };
+    return new MessageError('IncorrectPassword', 'Поле newPassword не может быть больше 12 символов.', 400);
   }
 
-  // Проверка у нового пароля первого и последнего символа на пробел
-  let newPassword = req.body.newPassword;
-  let lastIndex = req.body.newPassword.length - 1;
-  if (newPassword.charAt(0) === " " || newPassword.charAt(lastIndex) === " ") {
-    return {
-      data: {
-        name: "IncorrectPassword",
-        message: "Первый и последний символ пароля не может быть пробелом.",
-      },
-      status: 400,
-    };
+  // Проверка у нового пароля наличия пробелов
+  if (req.body.newPassword.includes(' ')) {
+    return new MessageError('IncorrectPassword', 'Поле newPassword не может содержать пробелы.', 400);
+  }
+
+  // Проверка у нового пароля наличия недопустимых символов
+  if (!regexPassword.test(req.body.newPassword)) {
+    return new MessageError('IncorrectPassword', 'Поле newPassword содержит недопустимые символы.', 400);
+  }
+
+  // Проверка на совпадение старого и нового паролей
+  if (req.body.newPassword === req.body.oldPassword) {
+    return new MessageError('IncorrectPassword', 'Поле newPassword не может совпадать с полем oldPassword.', 400);
   }
 };
 
-export default { changeUserPassword };
+export default { changeUserName, changeUserPassword };

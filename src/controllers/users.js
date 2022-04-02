@@ -22,7 +22,12 @@ export const getUser = async (req, res) => {
 
 // Изменить имя пользователя
 export const changeUserName = async (req, res) => {
-  const params = factory.createOptions({
+  const paramsUser = factory.createOptions({
+    database: "users",
+    filter: { _id: ObjectId(req.headers.userId) },
+  });
+  
+  const paramsUserChanges = factory.createOptions({
     database: "users",
     filter: { _id: ObjectId(req.headers.userId) },
     operator: {
@@ -33,7 +38,13 @@ export const changeUserName = async (req, res) => {
   });
 
   try {
-    let response = await mongoClient.updateDocument(params);
+    const user = await mongoClient.getDocument(paramsUser);
+
+    // Проверки
+    const err = validate.changeUserName(user, req);
+    if (err) return res.status(err.status).json(err.data);
+
+    let response = await mongoClient.updateDocument(paramsUserChanges);
     response = new User(response.value);
 
     // Генерация нового токена
