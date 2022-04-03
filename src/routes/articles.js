@@ -1,23 +1,29 @@
 import { Router } from "express";
-import { 
-  getArticleList, 
-  getArticle, 
-  getFavoriteArticleList,
-  getPopularArticleList
-} from "../controllers/articles.js";
+import articles from "../controllers/articles.js";
 
 const router = Router();
 
-// Получение списка статьей, с фильрацией по тегу
-router.get("/articles", getArticleList);
+/**
+ * Получение одной статьи по id
+ * @param {string} id - id ресурса
+ */
+router.get("/article", articles.getArticle);
 
-// Получение одной статьи по id
-router.get("/article", getArticle);
+/**
+ * Получение списка статьей, с фильрацией по тегу
+ * @param {string} tag - Название фильтра
+ */
+router.get("/articles", articles.getArticleList);
 
-// Получение статей которые лайкнул пользователь
-router.get("/articles/favorites", getFavoriteArticleList);
+/**
+ * Получение статей которые лайкнул пользователь
+ */
+router.get("/articles/favorites", articles.getFavoriteArticleList);
 
-// Получение рандомных статьей
-router.get("/articles/popular-articles", getPopularArticleList);
+/**
+ * Получение рандомных статьей
+ * @param {string|undefined} id - id ресурса которое не должно быть среди результатов
+ */
+router.get("/articles/popular-articles", articles.getPopularArticleList);
 
 export default router;

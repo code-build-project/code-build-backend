@@ -1,23 +1,29 @@
 import { Router } from "express";
-import {
-  getCourseList,
-  getCourse,
-  getFavoriteCourseList,
-  getPopularCourseList,
-} from "../controllers/courses.js";
+import courses from "../controllers/courses.js";
 
 const router = Router();
 
-// Получение списка курсов, с фильтром по тегу
-router.get("/courses", getCourseList);
+/**
+ * Получение однго курса по id
+ * @param {string} id - id ресурса
+ */
+router.get("/course", courses.getCourse);
 
-// Получение однго курса по id
-router.get("/course", getCourse);
+/**
+ * Получение списка курсов, с фильтром по тегу
+ * @param {string} tag - Название фильтра
+ */
+router.get("/courses", courses.getCourseList);
 
-// Получение курсов которые лайкнул пользователь
-router.get("/courses/favorites", getFavoriteCourseList);
+/**
+ * Получение курсов которые лайкнул пользователь
+ */
+router.get("/courses/favorites", courses.getFavoriteCourseList);
 
-// Получение рандомных курсов
-router.get("/courses/popular-courses", getPopularCourseList);
+/**
+ * Получение рандомных курсов
+ * @param {string|undefined} id - id ресурса которое не должно быть среди результатов
+ */
+router.get("/courses/popular-courses", courses.getPopularCourseList);
 
 export default router;

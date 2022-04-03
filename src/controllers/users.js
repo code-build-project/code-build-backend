@@ -10,93 +10,89 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 const { ObjectId } = mongodb;
 const factory = new MongoOptionsFactory();
 
-// Получение данных пользователя по токену(если токен верный)
-export const getUser = async (req, res) => {
-  try {
-    const decoded = jwt.verify(req.headers.authorization, keys.jwt);
-    res.status(200).json(new User(decoded));
-  } catch (err) {
-    res.status(401).json(err);
+export default class Users {
+  // Получение данных пользователя по токену(если токен верный)
+  static get(req, res) {
+    try {
+      res.status(200).json(new User(res.locals.user));
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
-};
 
-// Изменить имя пользователя
-export const changeUserName = async (req, res) => {
-  const paramsUser = factory.createOptions({
-    database: "users",
-    filter: { _id: ObjectId(req.headers.userId) },
-  });
+  // Изменить имя пользователя
+  static async changeName(req, res) {
+    const paramsUserChanges = factory.createOptions({
+      database: "users",
+      filter: { _id: ObjectId(res.locals.user._id) },
+      operator: {
+        $set: {
+          name: req.body.name,
+        },
+      },
+    });
   
-  const paramsUserChanges = factory.createOptions({
-    database: "users",
-    filter: { _id: ObjectId(req.headers.userId) },
-    operator: {
-      $set: {
-        name: req.body.name,
-      },
-    },
-  });
-
-  try {
-    const user = await mongoClient.getDocument(paramsUser);
-
-    // Проверки
-    const err = validate.changeUserName(user, req);
-    if (err) return res.status(err.status).json(err.data);
-
-    let response = await mongoClient.updateDocument(paramsUserChanges);
-    response = new User(response.value);
-
-    // Генерация нового токена
-    const token = jwt.sign(
-      {
-        _id: response.id,
-        name: req.body.name,
-        email: response.email,
-        isPremium: response.isPremium,
-      },
-      keys.jwt,
-      { expiresIn: 3600 }
-    );
-
-    res.status(200).json({
-      token: `Bearer ${token}`,
-    });
-  } catch (err) {
-    res.status(401).json(err);
+    try {
+      const err = validate.changeUserName(req);
+      if (err) return res.status(err.status).json(err.data);
+  
+      let response = await mongoClient.updateDocument(paramsUserChanges);
+      response = new User(response.value);
+  
+      const token = jwt.sign(
+        {
+          _id: response.id,
+          name: req.body.name,
+          email: response.email,
+          isPremium: response.isPremium,
+        },
+        keys.jwt,
+        { expiresIn: 3600 }
+      );
+  
+      res.status(200).json({
+        token: `Bearer ${token}`,
+      });
+    } catch (err) {
+      res.status(401).json(err);
+    }
   }
-};
 
-// Изменить пароль пользователя
-export const changeUserPassword = async (req, res) => {
-  const paramsUser = factory.createOptions({
-    database: "users",
-    filter: { _id: ObjectId(req.headers.userId) },
-  });
-
-  const paramsUserChanges = factory.createOptions({
-    database: "users",
-    filter: { _id: ObjectId(req.headers.userId) },
-    operator: {
-      $set: {
-        password: bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10)),
+  // Изменить пароль пользователя
+  static async changePassword() {
+    const paramsUserChanges = factory.createOptions({
+      database: "users",
+      filter: { _id: ObjectId(res.locals.user._id) },
+      operator: {
+        $set: {
+          password: bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10)),
+        },
       },
-    },
-  });
-
-  try {
-    const user = await mongoClient.getDocument(paramsUser);
-
-    // Проверки
-    const err = validate.changeUserPassword(user, req);
-    if (err) return res.status(err.status).json(err.data);
-
-    await mongoClient.updateDocument(paramsUserChanges);
-
-    res.status(200).json({
-      message: "Пароль изменен!",
     });
-  } catch (err) {
-    res.status(500).json(err);
+  
+    try {
+      const err = validate.changeUserPassword(req, res);
+      if (err) return res.status(err.status).json(err.data);
+  
+      await mongoClient.updateDocument(paramsUserChanges);
+  
+      const token = jwt.sign(
+        {
+          _id: res.locals.user._id,
+          name: res.locals.user.name,
+          email: res.locals.user.email,
+          isPremium: res.locals.user.isPremium,
+          password: req.body.newPassword,
+        },
+        keys.jwt,
+        { expiresIn: 3600 }
+      );
+  
+      res.status(200).json({
+        token: `Bearer ${token}`,
+      });
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
-};
+}

@@ -4,7 +4,7 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 const factory = new MongoOptionsFactory();
 
 // Получение списка лайков для определенного пользователя
-export const getLikeList = async (req, res) => {
+const getLikeList = async (req, res) => {
   const params = factory.createOptions({
     database: "likes",
     collection: req.query.field,
@@ -21,7 +21,7 @@ export const getLikeList = async (req, res) => {
 };
 
 // Добавить id карточки в список лайков
-export const addLike = async (req, res) => {
+const addLike = async (req, res) => {
   const params = factory.createOptions({
     database: "likes",
     collection: req.body.field,
@@ -38,7 +38,7 @@ export const addLike = async (req, res) => {
 };
 
 // Удалить id карточки из списка лайков
-export const deleteLike = async (req, res) => {
+const deleteLike = async (req, res) => {
   const params = factory.createOptions({
     database: "likes",
     collection: req.body.field,
@@ -53,3 +53,5 @@ export const deleteLike = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+export default { getLikeList, addLike, deleteLike };

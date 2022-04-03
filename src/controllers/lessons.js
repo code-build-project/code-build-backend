@@ -5,7 +5,7 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 const factory = new MongoOptionsFactory();
 
 // Получение видеоуроков из указанной коллекции
-export const getCourseLessons = async (req, res) => {
+const getCourseLessons = async (req, res) => {
   const params = factory.createOptions({
     database: "lessons",
     collection: req.query.courseId,
@@ -22,7 +22,7 @@ export const getCourseLessons = async (req, res) => {
 };
 
 // Получение понравившехся видеоуроков из всех коллекций
-export const getFavoriteLessons = async (req, res) => {
+const getFavoriteLessons = async (req, res) => {
   const paramsLikes = factory.createOptions({
     database: "likes",
     collection: "lessons",
@@ -45,3 +45,5 @@ export const getFavoriteLessons = async (req, res) => {
     });
   }
 };
+
+export default { getCourseLessons, getFavoriteLessons };

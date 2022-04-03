@@ -5,7 +5,7 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 const factory = new MongoOptionsFactory();
 
 // Получение всех отзывов
-export const getReviews = async (req, res) => {
+const getReviews = async (req, res) => {
   const params = factory.createOptions({
     database: "reviews",
     collection: "reviews",
@@ -20,3 +20,5 @@ export const getReviews = async (req, res) => {
     });
   }
 };
+
+export default { getReviews };

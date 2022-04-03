@@ -4,12 +4,7 @@ import { MessageError } from "../models/Responses.js";
 const regexName = /^[a-zа-яё\-]+$/i;
 const regexPassword = /^[a-zа-яё0-9-_!@#$%^&*()=+`~?]+$/;
 
-const changeUserName = (user, req) => {
-  // Проверка существования кандидата в БД
-  if (!user) {
-    return new MessageError('IncorrectEmail', 'Пользователь с таким e-mail не зарегистрирован.', 401);
-  }
-
+const changeUserName = (req) => {
   // Проверка на пустое значение поля name
   if (!req.body.name) {
     return new MessageError('IncorrectName', 'Поле name не может быть пустым.', 400);
@@ -26,19 +21,14 @@ const changeUserName = (user, req) => {
   }
 }
 
-const changeUserPassword = (user, req) => {
-  // Проверка существования кандидата в БД
-  if (!user) {
-    return new MessageError('IncorrectEmail', 'Пользователь с таким e-mail не зарегистрирован.', 401);
-  }
-
+const changeUserPassword = (req, res) => {
   // Проверка на пустое значение пароля
   if (!req.body.oldPassword) {
     return new MessageError('IncorrectPassword', 'Значение пароля не должно быть пустым.', 400);
   }
 
   // Проверка на совпадение пароля от клинета и пароля в БД кандадатов
-  const password = bcrypt.compareSync(req.body.oldPassword, user.password);
+  const password = bcrypt.compareSync(req.body.oldPassword, res.locals.user.password);
 
   if (!password) {
     return new MessageError('IncorrectPassword', 'Неправильный пароль.', 401);

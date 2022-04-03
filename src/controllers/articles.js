@@ -4,23 +4,8 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 
 const factory = new MongoOptionsFactory();
 
-// Получение всех статьей
-export const getArticleList = async (req, res) => {
-  const params = factory.createOptions({
-    database: "articles",
-    filter: req.query.tag ? { tags: req.query.tag } : {},
-  });
-
-  try {
-    const response = await mongoClient.getCollection(params);
-    res.send(response.map((item) => new Article(item)));
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
 // Получить одну статью по id
-export const getArticle = async (req, res) => {
+const getArticle = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
     filter: { id: req.query.id },
@@ -34,8 +19,23 @@ export const getArticle = async (req, res) => {
   }
 };
 
+// Получение всех статьей
+const getArticleList = async (req, res) => {
+  const params = factory.createOptions({
+    database: "articles",
+    filter: req.query.tag ? { tags: req.query.tag } : {},
+  });
+
+  try {
+    const response = await mongoClient.getCollection(params);
+    res.send(response.map((item) => new Article(item)));
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 // Получение статьей которые лайкнул пользователь
-export const getFavoriteArticleList = async (req, res) => {
+const getFavoriteArticleList = async (req, res) => {
   const paramsLikes = factory.createOptions({
     database: "likes",
     collection: "articles",
@@ -59,7 +59,7 @@ export const getFavoriteArticleList = async (req, res) => {
 };
 
 // Получить популярные рекомендации по статьям
-export const getPopularArticleList = async (req, res) => {
+const getPopularArticleList = async (req, res) => {
   const params = factory.createOptions({
     database: "articles",
     size: 3,
@@ -76,3 +76,5 @@ export const getPopularArticleList = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+export default { getArticle, getArticleList, getFavoriteArticleList, getPopularArticleList };

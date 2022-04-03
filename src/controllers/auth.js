@@ -29,6 +29,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         isPremium: user.isPremium,
+        password: req.body.password,
       },
       keys.jwt,
       { expiresIn: 21600 }
