@@ -3,7 +3,7 @@ import { MessageError } from "../models/Responses.js";
 
 const regexEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 
-export const login = (user, req) => {
+export const login = (req, user) => {
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
     return new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
@@ -27,7 +27,7 @@ export const login = (user, req) => {
   }
 };
 
-const recovery = (user, req) => {
+const recovery = (req, user) => {
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
     return new MessageError('IncorrectEmail', 'Неверный формат email.', 400);

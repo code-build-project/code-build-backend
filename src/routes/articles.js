@@ -1,5 +1,5 @@
 import { Router } from "express";
-import articles from "../controllers/articles.js";
+import Articles from "../controllers/articles.js";
 
 const router = Router();
 
@@ -7,23 +7,23 @@ const router = Router();
  * Получение одной статьи по id
  * @param {string} id - id ресурса
  */
-router.get("/article", articles.getArticle);
+router.get("/article", Articles.getArticle);
 
 /**
  * Получение списка статьей, с фильрацией по тегу
  * @param {string} tag - Название фильтра
  */
-router.get("/articles", articles.getArticleList);
+router.get("/articles", Articles.getArticleList);
 
 /**
  * Получение статей которые лайкнул пользователь
  */
-router.get("/articles/favorites", articles.getFavoriteArticleList);
+router.get("/articles/favorites", Articles.getFavoriteArticleList);
 
 /**
  * Получение рандомных статьей
  * @param {string|undefined} id - id ресурса которое не должно быть среди результатов
  */
-router.get("/articles/popular-articles", articles.getPopularArticleList);
+router.get("/articles/popular-articles", Articles.getPopularArticleList);
 
 export default router;

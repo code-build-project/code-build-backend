@@ -1,9 +1,8 @@
 import bcrypt from "bcryptjs";
 import mongodb from "mongodb";
-import jwt from "jsonwebtoken";
-import keys from "../config/keys.js";
 import { User } from "../models/Users.js";
-import validate from "../validates/user.js";
+import validate from "../validates/users.js";
+import { createToken } from "../helpers/token.js";
 import mongoClient from "../mongoDb/mongoClient.js";
 import MongoOptionsFactory from "../models/MongoOptions.js";
 
@@ -36,25 +35,19 @@ export default class Users {
       const err = validate.changeUserName(req);
       if (err) return res.status(err.status).json(err.data);
   
-      let response = await mongoClient.updateDocument(paramsUserChanges);
-      response = new User(response.value);
-  
-      const token = jwt.sign(
-        {
-          _id: response.id,
-          name: req.body.name,
-          email: response.email,
-          isPremium: response.isPremium,
-        },
-        keys.jwt,
-        { expiresIn: 3600 }
-      );
-  
-      res.status(200).json({
-        token: `Bearer ${token}`,
+      await mongoClient.updateDocument(paramsUserChanges);
+
+      const token = createToken({
+        _id: res.locals.user._id,
+        name: req.body.name,
+        email: res.locals.user.email,
+        isPremium: res.locals.user.isPremium,
+        password: res.locals.user.password,
       });
+  
+      res.status(200).json({ token: `Bearer ${token}` });
     } catch (err) {
-      res.status(401).json(err);
+      res.status(500).json(err);
     }
   }
 
@@ -75,22 +68,16 @@ export default class Users {
       if (err) return res.status(err.status).json(err.data);
   
       await mongoClient.updateDocument(paramsUserChanges);
-  
-      const token = jwt.sign(
-        {
-          _id: res.locals.user._id,
-          name: res.locals.user.name,
-          email: res.locals.user.email,
-          isPremium: res.locals.user.isPremium,
-          password: req.body.newPassword,
-        },
-        keys.jwt,
-        { expiresIn: 3600 }
-      );
-  
-      res.status(200).json({
-        token: `Bearer ${token}`,
+      
+      const token = createToken({
+        _id: res.locals.user._id,
+        name: res.locals.user.name,
+        email: res.locals.user.email,
+        isPremium: res.locals.user.isPremium,
+        password: req.body.newPassword,
       });
+
+      res.status(200).json({ token: `Bearer ${token}` });
     } catch (err) {
       res.status(500).json(err);
     }

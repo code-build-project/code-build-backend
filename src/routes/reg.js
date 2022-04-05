@@ -1,5 +1,5 @@
 import { Router } from "express";
-import registration from "../controllers/reg.js";
+import Registration from "../controllers/reg.js";
 
 const router = Router();
 
@@ -8,13 +8,13 @@ const router = Router();
  * @param {string} name - Имя пользователя
  * @param {string} email - Почта пользователя
  */
-router.post("/sign", registration.create);
+router.post("/sign", Registration.create);
 
 /**
  * Подтверждение регистрации
  * @param {string} email - Почта пользователя
  * @param {string} password - Пароль из письма
  */
-router.post("/confirm-sign", registration.confirm);
+router.post("/confirm-sign", Registration.confirm);
 
 export default router;

@@ -4,21 +4,19 @@ import MongoOptionsFactory from "../models/MongoOptions.js";
 
 const factory = new MongoOptionsFactory();
 
-// Получение всех отзывов
-const getReviews = async (req, res) => {
-  const params = factory.createOptions({
-    database: "reviews",
-    collection: "reviews",
-  });
-
-  try {
-    const response = await mongoClient.getCollection(params);
-    res.send(response.map((item) => new Review(item)));
-  } catch (err) {
-    res.status(401).json({
-      message: `Ошибка: ${err}`,
+export default class Reviews {
+  // Получение всех отзывов
+  static getList = async (req, res) => {
+    const params = factory.createOptions({
+      database: "reviews",
+      collection: "reviews",
     });
-  }
-};
 
-export default { getReviews };
+    try {
+      const response = await mongoClient.getCollection(params);
+      res.send(response.map((item) => new Review(item)));
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+}

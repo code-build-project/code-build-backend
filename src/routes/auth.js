@@ -1,5 +1,5 @@
 import { Router } from "express";
-import auth from "../controllers/auth.js";
+import Auth from "../controllers/auth.js";
 
 const router = Router();
 
@@ -8,12 +8,12 @@ const router = Router();
  * @param {string} email - Почта пользователя
  * @param {string} password - Пароль из письма
  */
-router.post('/login', auth.login);
+router.post('/login', Auth.login);
 
 /**
  * Восстановление пароля
  * @param {string} email - Почта пользователя
  */
-router.post("/recovery-password", auth.recovery);
+router.post("/recovery-password", Auth.recovery);
 
 export default router;

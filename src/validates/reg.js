@@ -4,7 +4,7 @@ import { MessageError } from "../models/Responses.js";
 const regexEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 const regexName = /^[a-zа-яё\-]+$/i;
 
-const create = (user, candidate, req) => {
+const create = (req, user, candidate) => {
   // Проверка на пустое значение поля name
   if (!req.body.name) {
     return new MessageError('IncorrectName', 'Поле name не может быть пустым.', 400);
@@ -41,7 +41,7 @@ const create = (user, candidate, req) => {
   }
 };
 
-const confirm = (user, candidate, req) => {
+const confirm = (req, user, candidate) => {
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
     return new MessageError('IncorrectEmail', 'Неверный формат email.', 400);

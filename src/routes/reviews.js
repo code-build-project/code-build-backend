@@ -1,11 +1,11 @@
 import { Router } from "express";
-import reviews from "../controllers/reviews.js";
+import Reviews from "../controllers/reviews.js";
 
 const router = Router();
 
 /**
  * Получение списка отзывов
  */
-router.get("/reviews", reviews.getReviews);
+router.get("/reviews", Reviews.getList);
 
 export default router;

@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { MessageError } from "../models/Responses.js";
 
 const regexName = /^[a-zа-яё\-]+$/i;
@@ -28,9 +27,7 @@ const changeUserPassword = (req, res) => {
   }
 
   // Проверка на совпадение пароля от клинета и пароля в БД кандадатов
-  const password = bcrypt.compareSync(req.body.oldPassword, res.locals.user.password);
-
-  if (!password) {
+  if (req.body.oldPassword !== res.locals.user.password) {
     return new MessageError('IncorrectPassword', 'Неправильный пароль.', 401);
   }
 
