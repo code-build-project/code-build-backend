@@ -1,45 +1,42 @@
 import { Lesson } from "../models/Lessons.js";
-import mongoClient from "../mongoDb/mongoClient.js";
-import MongoOptionsFactory from "../models/MongoOptions.js";
+import Controller from "../controllers/AbstractController.js";
 
-const factory = new MongoOptionsFactory();
-
-export default class Lessons {
+export default class Lessons extends Controller {
   // Получение видеоуроков из указанной коллекции
   static async getCourseLessons(req, res) {
-    const params = factory.createOptions({
+    const params = Controller.createOptions({
       database: "lessons",
       collection: req.query.courseId,
     });
 
     try {
-      const response = await mongoClient.getCollection(params);
+      const response = await Controller.service.getCollection(params);
       res.send(response.map((item) => new Lesson(item)));
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 
   // Получение понравившехся видеоуроков из всех коллекций
   static async getFavoriteLessons(req, res) {
-    const paramsLikes = factory.createOptions({
+    const paramsLikes = Controller.createOptions({
       database: "likes",
       collection: "lessons",
       filter: { userId: res.locals.user._id },
     });
 
     try {
-      const { likes = [] } = (await mongoClient.getDocument(paramsLikes)) || {};
+      const { likes = [] } = (await Controller.service.getDocument(paramsLikes)) || {};
 
-      const paramsLessons = factory.createOptions({
+      const paramsLessons = Controller.createOptions({
         database: "lessons",
         filter: { id: { $in: likes } },
       });
 
-      const response = await mongoClient.getDatabase(paramsLessons);
+      const response = await Controller.service.getDatabase(paramsLessons);
       res.send(response.map((item) => new Lesson(item)));
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 }

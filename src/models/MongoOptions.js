@@ -60,7 +60,10 @@ class Likes {
     this.collection = options.collection;
     this.filter = options.filter;
     this.operator = options.operator;
-    this.upsert = true;
+    this.option = {
+      upsert: true,
+      returnDocument: 'after',
+    };
   }
 }
 

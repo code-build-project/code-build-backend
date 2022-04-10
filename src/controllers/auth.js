@@ -1,26 +1,22 @@
 import bcrypt from "bcryptjs";
 import validate from "../validates/auth.js";
 import { createToken } from "../helpers/token.js";
-import mongoClient from "../mongoDb/mongoClient.js";
 import { generatePassword } from "../helpers/generate.js";
-import MongoOptionsFactory from "../models/MongoOptions.js";
 import { sendMail } from "../nodemailer/transporterMail.js";
+import Controller from "../controllers/AbstractController.js";
 
-const factory = new MongoOptionsFactory();
-
-export default class Auth {
+export default class Auth extends Controller {
   // Авторизация с возвратом сгенерированного токена
   static async login(req, res) {
-    const params = factory.createOptions({
+    const params = Controller.createOptions({
       database: "users",
       filter: { email: req.body.email },
     });
 
     try {
-      const user = await mongoClient.getDocument(params);
+      const user = await Controller.service.getDocument(params);
 
-      const err = validate.login(req, user);
-      if (err) return res.status(err.status).json(err.data);
+      validate.login(req, user);
 
       const token = createToken({
         _id: user._id,
@@ -34,22 +30,21 @@ export default class Auth {
         token: `Bearer ${token}`,
       });
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 
   // Восстановление пароля
   static async recovery(req, res) {
-    const paramsUser = factory.createOptions({
+    const paramsUser = Controller.createOptions({
       database: "users",
       filter: { email: req.body.email },
     });
     
     try {
-      const user = await mongoClient.getDocument(paramsUser);
+      const user = await Controller.service.getDocument(paramsUser);
 
-      const err = validate.recovery(req, user);
-      if (err) return res.status(err.status).json(err.data);
+      validate.recovery(req, user);
 
       const newPassword = generatePassword();
 
@@ -62,7 +57,7 @@ export default class Auth {
 
       await sendMail(info);
 
-      const paramsPassword = factory.createOptions({
+      const paramsPassword = Controller.createOptions({
         database: "users",
         filter: { email: req.body.email },
         operator: {
@@ -72,12 +67,12 @@ export default class Auth {
         },
       });
 
-      await mongoClient.updateDocument(paramsPassword);
+      await Controller.service.updateDocument(paramsPassword);
 
       const message = "Пароль успешно изменен.";
       return res.status(201).json({ message });
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 }

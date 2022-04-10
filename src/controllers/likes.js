@@ -1,29 +1,36 @@
-import mongoClient from "../mongoDb/mongoClient.js";
-import MongoOptionsFactory from "../models/MongoOptions.js";
+import validate from "../validates/likes.js";
+import Controller from "../controllers/AbstractController.js";
 
-const factory = new MongoOptionsFactory();
-
-export default class Likes {
+export default class Likes extends Controller {
   // Получение списка лайков для определенного пользователя
   static async getLikeList(req, res) {
-    const params = factory.createOptions({
+    const params = Controller.createOptions({
       database: "likes",
       collection: req.query.field,
       filter: { userId: res.locals.user._id },
     });
 
     try {
-      const response = await mongoClient.getDocument(params);
+      const response = await Controller.service.getDocument(params);
       const likeList = response ? response.likes : [];
       res.send(likeList);
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 
   // Добавить id карточки в список лайков
   static async addLike(req, res) {
-    const params = factory.createOptions({
+    const paramsField = {
+      database: req.body.field
+    }
+
+    const paramsDocument = Controller.createOptions({
+      database: req.body.field,
+      filter: { id: req.body.id },
+    });
+
+    const paramsLike = Controller.createOptions({
       database: "likes",
       collection: req.body.field,
       filter: { userId: res.locals.user._id },
@@ -31,16 +38,26 @@ export default class Likes {
     });
 
     try {
-      const response = await mongoClient.updateDocument(params);
-      res.send(response.value);
+      const isField = await Controller.service.checkCollectionName(paramsField);
+      validate.addLike(req, {}, isField);
+
+      const document = await Controller.service.getDocument(paramsDocument);
+      validate.addLike(req, document, true);
+
+      await Controller.service.updateDocument(paramsLike);
+      res.send('Успешно!');
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 
   // Удалить id карточки из списка лайков
   static async deleteLike(req, res) {
-    const params = factory.createOptions({
+    const paramsField = {
+      database: req.body.field
+    }
+
+    const params = Controller.createOptions({
       database: "likes",
       collection: req.body.field,
       filter: { userId: res.locals.user._id },
@@ -48,10 +65,14 @@ export default class Likes {
     });
 
     try {
-      const response = await mongoClient.updateDocument(params);
-      res.send(response.value);
+      const isField = await Controller.service.checkCollectionName(paramsField);
+
+      validate.deleteLike(req, isField);
+
+      await Controller.service.updateDocument(params);
+      res.send('Успешно!');
     } catch (err) {
-      res.status(500).json(err);
+      Controller.errorHandler(res, err);
     }
   }
 }

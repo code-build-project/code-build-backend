@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import mongodb from "mongodb";
 import { verifyToken } from "../helpers/token.js";
 import mongoClient from "../mongoDb/mongoClient.js";
-import { MessageError } from "../models/Responses.js";
+import { MessageError } from "../models/Errors.js";
 import MongoOptionsFactory from "../models/MongoOptions.js";
 
 const { ObjectId } = mongodb;

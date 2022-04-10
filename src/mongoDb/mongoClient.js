@@ -23,8 +23,16 @@ export default {
     return response;
   },
 
+  // Проверка существования коллекции в указанной бд
+  async checkCollectionName(params) {
+    const db = database.db(params.database);
+    const collection = db.listCollections({});
+    const response = await collection.toArray();
+    return response.length ? true : false;
+  },
+
   // Получение имен всех коллекций указанной базы данных
-  async getCollectionNames(params) {
+  async getCollectionNameList(params) {
     const db = database.db(params.database);
     const collection = db.listCollections({});
     const response = await collection.toArray();
@@ -33,7 +41,7 @@ export default {
 
   // Получение содержимого всех коллекций указанной базы данных
   async getDatabase(params) {
-    let collectionNames = await this.getCollectionNames(params);
+    let collectionNames = await this.getCollectionNameList(params);
     let allCollections = [];
 
     for (let i = 0; i < collectionNames.length; i++) {
@@ -81,11 +89,11 @@ export default {
 
   // Обновить документ коллекции
   updateDocument(params) {
-    const { filter, operator, upsert } = params;
+    const { filter, operator, option } = params;
 
     const db = database.db(params.database);
     const collection = db.collection(params.collection);
-    return collection.findOneAndUpdate(filter, operator, { upsert: upsert });
+    return collection.findOneAndUpdate(filter, operator, option);
   },
 
   // Добавить в коллекцию индекс времени жизни для документов
