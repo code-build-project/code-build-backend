@@ -51,4 +51,4 @@ const sendMail = async (info) => {
   }
 };
 
-export { transporter, createMail, sendMail };
+export { sendMail };

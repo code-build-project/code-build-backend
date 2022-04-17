@@ -2,23 +2,24 @@ import bcrypt from "bcryptjs";
 import validate from "../validates/reg.js";
 import { createToken } from "../helpers/token.js";
 import { generatePassword } from "../helpers/generate.js";
-import { sendMail } from "../nodemailer/transporterMail.js";
+import { sendMail } from "../config/nodemailer.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Registration extends Controller {
   // Отправка пароля подтверждения на почту и занесения нового пользователя в кандидаты
   static async create (req, res) {
     try {
-      const paramsUser = Controller.createOptions({
+      const paramsUser = {
         database: "users",
+        collection: "users",
         filter: { email: req.body.email },
-      });
+      };
 
-      const paramsCandidate = Controller.createOptions({
+      const paramsCandidate = {
         database: "users",
         collection: "candidates",
         filter: { email: req.body.email },
-      });
+      };
 
       const user = await Controller.service.getDocument(paramsUser);
       const candidate = await Controller.service.getDocument(paramsCandidate);
@@ -36,11 +37,11 @@ export default class Registration extends Controller {
 
       await sendMail(info);
 
-      const paramsIndexCandidate = Controller.createOptions({
+      const paramsIndexCandidate = {
         database: "users",
         collection: "candidates",
         lifeTime: 40,
-      });
+      };
 
       const newCandidate = {
         name: req.body.name,
@@ -49,11 +50,11 @@ export default class Registration extends Controller {
         createdAt: new Date(),
       };
 
-      const paramsNewCandidate = Controller.createOptions({
+      const paramsNewCandidate = {
         database: "users",
         collection: "candidates",
         newDocument: newCandidate,
-      });
+      };
 
       await Controller.service.createIndex(paramsIndexCandidate);
       await Controller.service.updateCollection(paramsNewCandidate);
@@ -68,16 +69,17 @@ export default class Registration extends Controller {
   // Подтверждение регистрации и добаваление нового пользователя в БД
   static async confirm (req, res) {
     try {
-      const paramsCandidate = Controller.createOptions({
+      const paramsCandidate = {
         database: "users",
         collection: "candidates",
         filter: { email: req.body.email },
-      });
+      };
 
-      const paramsUser = Controller.createOptions({
+      const paramsUser = {
         database: "users",
+        collection: "users",
         filter: { email: req.body.email },
-      });
+      };
 
       const candidate = await Controller.service.getDocument(paramsCandidate);
       const user = await Controller.service.getDocument(paramsUser);
@@ -91,10 +93,11 @@ export default class Registration extends Controller {
         isPremium: false,
       };
 
-      const params = Controller.createOptions({
+      const params = {
         database: "users",
+        collection: "users",
         newDocument: newUser,
-      });
+      };
 
       await Controller.service.updateCollection(params);
 

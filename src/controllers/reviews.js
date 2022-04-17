@@ -4,10 +4,10 @@ import Controller from "../controllers/AbstractController.js";
 export default class Reviews extends Controller {
   // Получение всех отзывов
   static getList = async (req, res) => {
-    const params = Controller.createOptions({
+    const params = {
       database: "reviews",
       collection: "reviews",
-    });
+    };
 
     try {
       const response = await Controller.service.getCollection(params);

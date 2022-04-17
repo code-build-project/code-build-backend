@@ -23,12 +23,12 @@ const changeUserName = (req) => {
 const changeUserPassword = (req, res) => {
   // Проверка на пустое значение пароля
   if (!req.body.oldPassword) {
-    throw new MessageError('IncorrectPassword', 'Значение пароля не должно быть пустым.', 400);
+    throw new MessageError('IncorrectPassword', 'Поле oldPassword не может быть пустым.', 400);
   }
 
   // Проверка на совпадение пароля от клинета и пароля в БД кандадатов
   if (req.body.oldPassword !== res.locals.user.password) {
-    throw new MessageError('IncorrectPassword', 'Неправильный пароль.', 401);
+    throw new MessageError('IncorrectPassword', 'Неправильный пароль!', 401);
   }
 
   // Проверка минимального количества символов нового пароля

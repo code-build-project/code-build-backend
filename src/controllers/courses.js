@@ -4,10 +4,11 @@ import Controller from "../controllers/AbstractController.js";
 export default class Courses extends Controller {
   // Получение одного курса по id
   static async getCourse(req, res) {
-    const params = Controller.createOptions({
+    const params = {
       database: "courses",
+      collection: "courses",
       filter: { id: req.query.id },
-    });
+    };
 
     try {
       const response = await Controller.service.getDocument(params);
@@ -19,10 +20,11 @@ export default class Courses extends Controller {
 
   // Получение всех курсов
   static async getCourseList(req, res) {
-    const params = Controller.createOptions({
+    const params = {
       database: "courses",
+      collection: "courses",
       filter: req.query.tag ? { tags: req.query.tag } : {},
-    });
+    };
 
     try {
       const response = await Controller.service.getCollection(params);
@@ -34,19 +36,20 @@ export default class Courses extends Controller {
 
   // Получение курсов которые лайкнул пользователь
   static async getFavoriteCourseList(req, res) {
-    const paramsLikes = Controller.createOptions({
+    const paramsLikes = {
       database: "likes",
       collection: "courses",
       filter: { userId: res.locals.user._id },
-    });
+    };
 
     try {
       const { likes = [] } = (await Controller.service.getDocument(paramsLikes)) || {};
 
-      const paramsCourses = Controller.createOptions({
+      const paramsCourses = {
         database: "courses",
+        collection: "courses",
         filter: { id: { $in: likes } },
-      });
+      };
 
       const response = await Controller.service.getCollection(paramsCourses);
       res.send(response.map((item) => new Course(item)));
@@ -55,15 +58,16 @@ export default class Courses extends Controller {
     }
   }
 
-  // Получить популярные рекомендации по курсам
+  // Получить рандомно, популярные курсы
   static async getPopularCourseList(req, res) {
-    const params = Controller.createOptions({
+    const params = {
       database: "courses",
+      collection: "courses",
       size: 3,
-    });
+    };
 
     try {
-      const response = await Controller.service.getRandomCollection(params);
+      const response = await Controller.service.getRandomDocumentList(params);
 
       let array = response.filter((item) => item.id !== req.query.id);
       if (array.length > 3) array.pop();

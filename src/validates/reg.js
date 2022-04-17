@@ -22,7 +22,7 @@ const create = (req, user, candidate) => {
 
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
-    throw new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
+    throw new MessageError('IncorrectEmail', 'Неверный формат поля email.', 400);
   }
 
   // Проверка максимального количества символов email
@@ -44,7 +44,7 @@ const create = (req, user, candidate) => {
 const confirm = (req, user, candidate) => {
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
-    throw new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
+    throw new MessageError('IncorrectEmail', 'Неверный формат поля email.', 400);
   }
 
   // Проверка на существования пользователя в БД
@@ -66,7 +66,7 @@ const confirm = (req, user, candidate) => {
   const password = bcrypt.compareSync(req.body.password, candidate.password);
 
   if (!password) {
-    throw new MessageError('IncorrectPassword', 'Неправильный пароль.', 401);
+    throw new MessageError('IncorrectPassword', 'Неправильный пароль!', 401);
   }
 };
 

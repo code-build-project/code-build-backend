@@ -6,7 +6,7 @@ const regexEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
 export const login = (req, user) => {
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
-    throw new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
+    throw new MessageError('IncorrectEmail', 'Неверный формат поля email.', 400);
   }
 
   // Проверка существования пользователя
@@ -16,7 +16,7 @@ export const login = (req, user) => {
 
   // Проверка на пустое значение пароля
   if (!req.body.password) {
-    throw new MessageError('IncorrectPassword', 'Поле пароля не может быть пустым.', 400);
+    throw new MessageError('IncorrectPassword', 'Поле password не может быть пустым.', 400);
   }
 
   // Проверка на совпадение пароля от клинета и пароля в БД
@@ -30,7 +30,7 @@ export const login = (req, user) => {
 const recovery = (req, user) => {
   // Проверка на правильный формат email
   if (!regexEmail.test(req.body.email)) {
-    throw new MessageError('IncorrectEmail', 'Неверный формат email.', 400);
+    throw new MessageError('IncorrectEmail', 'Неверный формат поля email.', 400);
   }
   
   // Проверка существования пользователя

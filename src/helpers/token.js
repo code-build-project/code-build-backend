@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import keys from "../config/keys.js";
 
-// Создание токена
+/**
+ * Создание токена
+ * @param {object} user - данные пользователя для шифрования в токен
+ */
 export const createToken = (user) => {
   return jwt.sign(
     {
@@ -16,7 +19,10 @@ export const createToken = (user) => {
   );
 };
 
-// Проверка токена
+/**
+ * Проверка токена
+ * @param {string} token - токен
+ */
 export const verifyToken = (token) => {
   return jwt.verify(token, keys.jwt);
 };

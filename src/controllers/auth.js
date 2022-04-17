@@ -2,16 +2,17 @@ import bcrypt from "bcryptjs";
 import validate from "../validates/auth.js";
 import { createToken } from "../helpers/token.js";
 import { generatePassword } from "../helpers/generate.js";
-import { sendMail } from "../nodemailer/transporterMail.js";
+import { sendMail } from "../config/nodemailer.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Auth extends Controller {
   // Авторизация с возвратом сгенерированного токена
   static async login(req, res) {
-    const params = Controller.createOptions({
+    const params = {
       database: "users",
+      collection: "users",
       filter: { email: req.body.email },
-    });
+    };
 
     try {
       const user = await Controller.service.getDocument(params);
@@ -36,10 +37,11 @@ export default class Auth extends Controller {
 
   // Восстановление пароля
   static async recovery(req, res) {
-    const paramsUser = Controller.createOptions({
+    const paramsUser = {
       database: "users",
+      collection: "users",
       filter: { email: req.body.email },
-    });
+    };
     
     try {
       const user = await Controller.service.getDocument(paramsUser);
@@ -57,20 +59,20 @@ export default class Auth extends Controller {
 
       await sendMail(info);
 
-      const paramsPassword = Controller.createOptions({
+      const paramsPassword = {
         database: "users",
+        collection: "users",
         filter: { email: req.body.email },
         operator: {
           $set: {
             password: bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)),
           },
         },
-      });
+      };
 
       await Controller.service.updateDocument(paramsPassword);
 
-      const message = "Пароль успешно изменен.";
-      return res.status(201).json({ message });
+      res.status(201).json({ message: "Пароль успешно изменен." });
     } catch (err) {
       Controller.errorHandler(res, err);
     }

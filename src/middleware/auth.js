@@ -1,12 +1,10 @@
 import bcrypt from "bcryptjs";
 import mongodb from "mongodb";
 import { verifyToken } from "../helpers/token.js";
-import mongoClient from "../mongoDb/mongoClient.js";
 import { MessageError } from "../models/Errors.js";
-import MongoOptionsFactory from "../models/MongoOptions.js";
+import service from "../mongoDb/mongoClient.js";
 
 const { ObjectId } = mongodb;
-const factory = new MongoOptionsFactory();
 const protectedRoutes = [
   "/user",
   "/user/change-name",
@@ -25,11 +23,12 @@ export default async (req, res, next) => {
     //Токен валидный, передаём запрос дальше
     try {
       const decode = verifyToken(req.headers.authorization);
-      const params = factory.createOptions({
+      const params = {
         database: "users",
+        collection: "users",
         filter: { _id: ObjectId(decode._id) },
-      });
-      const user = await mongoClient.getDocument(params);
+      };
+      const user = await service.getDocument(params);
       const isValidPassword = bcrypt.compareSync(decode.password, user.password);
     
       if (!isValidPassword) {

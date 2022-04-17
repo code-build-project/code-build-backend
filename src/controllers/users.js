@@ -19,15 +19,16 @@ export default class Users extends Controller {
 
   // Изменить имя пользователя
   static async changeName(req, res) {
-    const paramsUserChanges = Controller.createOptions({
+    const paramsUserChanges = {
       database: "users",
+      collection: "users",
       filter: { _id: ObjectId(res.locals.user._id) },
       operator: {
         $set: {
           name: req.body.name,
         },
       },
-    });
+    };
   
     try {
       validate.changeUserName(req);
@@ -50,15 +51,16 @@ export default class Users extends Controller {
 
   // Изменить пароль пользователя
   static async changePassword(req, res) {
-    const paramsUserChanges = Controller.createOptions({
+    const paramsUserChanges = {
       database: "users",
+      collection: "users",
       filter: { _id: ObjectId(res.locals.user._id) },
       operator: {
         $set: {
           password: bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10)),
         },
       },
-    });
+    };
   
     try {
       validate.changeUserPassword(req, res);

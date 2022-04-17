@@ -4,11 +4,11 @@ import Controller from "../controllers/AbstractController.js";
 export default class Likes extends Controller {
   // Получение списка лайков для определенного пользователя
   static async getLikeList(req, res) {
-    const params = Controller.createOptions({
+    const params = {
       database: "likes",
       collection: req.query.field,
       filter: { userId: res.locals.user._id },
-    });
+    };
 
     try {
       const response = await Controller.service.getDocument(params);
@@ -25,17 +25,18 @@ export default class Likes extends Controller {
       database: req.body.field
     }
 
-    const paramsDocument = Controller.createOptions({
+    const paramsDocument = {
       database: req.body.field,
+      collection: req.body.field,
       filter: { id: req.body.id },
-    });
+    };
 
-    const paramsLike = Controller.createOptions({
+    const paramsLike = {
       database: "likes",
       collection: req.body.field,
       filter: { userId: res.locals.user._id },
       operator: { $addToSet: { likes: req.body.id } },
-    });
+    };
 
     try {
       const isField = await Controller.service.checkCollectionName(paramsField);
@@ -57,12 +58,13 @@ export default class Likes extends Controller {
       database: req.body.field
     }
 
-    const params = Controller.createOptions({
+    const params = {
       database: "likes",
       collection: req.body.field,
       filter: { userId: res.locals.user._id },
       operator: { $pull: { likes: req.body.id } },
-    });
+      option: { upsert: true },
+    };
 
     try {
       const isField = await Controller.service.checkCollectionName(paramsField);
