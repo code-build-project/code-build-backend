@@ -1,4 +1,4 @@
-import validate from "../validates/likes.js";
+import validator from "../validators/likes.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Likes extends Controller {
@@ -7,7 +7,7 @@ export default class Likes extends Controller {
     const params = {
       database: "likes",
       collection: req.query.field,
-      filter: { userId: res.locals.user._id },
+      filter: { userId: res.locals.user.id },
     };
 
     try {
@@ -34,16 +34,17 @@ export default class Likes extends Controller {
     const paramsLike = {
       database: "likes",
       collection: req.body.field,
-      filter: { userId: res.locals.user._id },
+      filter: { userId: res.locals.user.id },
       operator: { $addToSet: { likes: req.body.id } },
+      option: { upsert: true },
     };
 
     try {
       const isField = await Controller.service.checkCollectionName(paramsField);
-      validate.addLike(req, {}, isField);
+      validator.isField(isField, req.body.field);
 
       const document = await Controller.service.getDocument(paramsDocument);
-      validate.addLike(req, document, true);
+      validator.isDocument(document, req.body.id, req.body.field);
 
       await Controller.service.updateDocument(paramsLike);
       res.send('Успешно!');
@@ -61,7 +62,7 @@ export default class Likes extends Controller {
     const params = {
       database: "likes",
       collection: req.body.field,
-      filter: { userId: res.locals.user._id },
+      filter: { userId: res.locals.user.id },
       operator: { $pull: { likes: req.body.id } },
       option: { upsert: true },
     };
@@ -69,7 +70,7 @@ export default class Likes extends Controller {
     try {
       const isField = await Controller.service.checkCollectionName(paramsField);
 
-      validate.deleteLike(req, isField);
+      validator.isField(isField, req.body.field);
 
       await Controller.service.updateDocument(params);
       res.send('Успешно!');

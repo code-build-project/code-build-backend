@@ -1,4 +1,4 @@
-import { Lesson } from "../models/Lessons.js";
+import Lesson from "../models/Lesson.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Lessons extends Controller {
@@ -22,7 +22,7 @@ export default class Lessons extends Controller {
     const paramsLikes = {
       database: "likes",
       collection: "lessons",
-      filter: { userId: res.locals.user._id },
+      filter: { userId: res.locals.user.id },
     };
 
     try {

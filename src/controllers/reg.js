@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import validate from "../validates/reg.js";
+import validator from "../validators/reg.js";
 import { createToken } from "../helpers/token.js";
+import { sendMail } from "../helpers/nodemailer.js";
 import { generatePassword } from "../helpers/generate.js";
-import { sendMail } from "../config/nodemailer.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Registration extends Controller {
@@ -24,7 +24,13 @@ export default class Registration extends Controller {
       const user = await Controller.service.getDocument(paramsUser);
       const candidate = await Controller.service.getDocument(paramsCandidate);
 
-      validate.create(req, user, candidate);
+      validator.hasName(req.body.name);
+      validator.formatName(req.body.name);
+      validator.maxLengthName(req.body.name.length, 20);
+      validator.formatEmail(req.body.email);
+      validator.maxLengthEmail(req.body.email.length);
+      validator.isUser(user);
+      validator.isCandidate(candidate);
 
       const password = generatePassword();
 
@@ -84,7 +90,11 @@ export default class Registration extends Controller {
       const candidate = await Controller.service.getDocument(paramsCandidate);
       const user = await Controller.service.getDocument(paramsUser);
 
-      validate.confirm(req, user, candidate);
+      validator.formatEmail(req.body.email);
+      validator.isUser(user);
+      validator.timeRegCandidate(candidate);
+      validator.hasPassword(req.body.password);
+      validator.correctPassword(req.body.password, candidate.password);
 
       const newUser = {
         name: candidate.name,

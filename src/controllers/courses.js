@@ -1,4 +1,5 @@
-import { Course } from "../models/Courses.js";
+import Course from "../models/Course.js";
+import validator from "../validators/courses.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Courses extends Controller {
@@ -11,7 +12,11 @@ export default class Courses extends Controller {
     };
 
     try {
+      validator.hasId(req.query.id);
+
       const response = await Controller.service.getDocument(params);
+
+      validator.isFindResource(response);
       res.send(new Course(response));
     } catch (err) {
       Controller.errorHandler(res, err);
@@ -39,7 +44,7 @@ export default class Courses extends Controller {
     const paramsLikes = {
       database: "likes",
       collection: "courses",
-      filter: { userId: res.locals.user._id },
+      filter: { userId: res.locals.user.id },
     };
 
     try {

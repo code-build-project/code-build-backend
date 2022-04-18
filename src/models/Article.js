@@ -1,4 +1,4 @@
-export class Article {
+export default class Article {
   constructor(article) {
     this.id = article.id;
     this.title = article.title;

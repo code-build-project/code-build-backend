@@ -1,4 +1,4 @@
-export class Lesson {
+export default class Lesson {
   constructor(lesson) {
     this.id = lesson.id;
     this.number = lesson.number;

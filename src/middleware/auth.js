@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import mongodb from "mongodb";
-import { verifyToken } from "../helpers/token.js";
-import { MessageError } from "../models/Errors.js";
+import MessageError from "../models/Error.js";
 import service from "../mongoDb/mongoClient.js";
+import { verifyToken } from "../helpers/token.js";
 
 const { ObjectId } = mongodb;
 const protectedRoutes = [
@@ -26,7 +26,7 @@ export default async (req, res, next) => {
       const params = {
         database: "users",
         collection: "users",
-        filter: { _id: ObjectId(decode._id) },
+        filter: { _id: ObjectId(decode.id) },
       };
       const user = await service.getDocument(params);
       const isValidPassword = bcrypt.compareSync(decode.password, user.password);
@@ -36,7 +36,11 @@ export default async (req, res, next) => {
         return res.status(err.status).json(err.data);
       }
       
-      res.locals.user = {...user, password: decode.password };
+      res.locals.user = {
+        ...user, 
+        id: String(user._id), 
+        password: decode.password 
+      };
       next();
     } catch (err) {
       // Неверный токен, возвращаем ошибку

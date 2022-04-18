@@ -1,5 +1,5 @@
-import { Article } from "../models/Articles.js";
-import validate from "../validates/articles.js";
+import Article from "../models/Article.js";
+import validator from "../validators/articles.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Articles extends Controller {
@@ -12,9 +12,11 @@ export default class Articles extends Controller {
     };
 
     try {
-      validate.getArticle(req);
+      validator.hasId(req.query.id);
 
       const response = await Controller.service.getDocument(params);
+
+      validator.isFindResource(response);
       res.send(new Article(response));
     } catch (err) {
       Controller.errorHandler(res, err);
@@ -42,7 +44,7 @@ export default class Articles extends Controller {
     const paramsLikes = {
       database: "likes",
       collection: "articles",
-      filter: { userId: res.locals.user._id },
+      filter: { userId: res.locals.user.id },
     };
 
     try {

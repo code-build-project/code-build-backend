@@ -35,7 +35,7 @@ const createMail = (info) => {
   };
 };
 
-const sendMail = async (info) => {
+export const sendMail = async (info) => {
   try {
     const mail = createMail(info);
     return await transporter.sendMail(mail);
@@ -50,5 +50,3 @@ const sendMail = async (info) => {
     } else throw err;
   }
 };
-
-export { sendMail };

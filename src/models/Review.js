@@ -1,4 +1,4 @@
-export class Review {
+export default class Review {
   constructor(review) {
     this.id = review.id;
     this.score = review.score;

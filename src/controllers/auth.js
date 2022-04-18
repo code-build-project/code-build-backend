@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import validate from "../validates/auth.js";
+import validator from "../validators/auth.js";
 import { createToken } from "../helpers/token.js";
+import { sendMail } from "../helpers/nodemailer.js";
 import { generatePassword } from "../helpers/generate.js";
-import { sendMail } from "../config/nodemailer.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Auth extends Controller {
@@ -17,10 +17,13 @@ export default class Auth extends Controller {
     try {
       const user = await Controller.service.getDocument(params);
 
-      validate.login(req, user);
+      validator.formatEmail(req.body.email);
+      validator.isUser(user);
+      validator.hasPassword(req.body.password);
+      validator.correctPassword(req.body.password, user.password);
 
       const token = createToken({
-        _id: user._id,
+        id: user._id,
         name: user.name,
         email: user.email,
         isPremium: user.isPremium,
@@ -46,7 +49,8 @@ export default class Auth extends Controller {
     try {
       const user = await Controller.service.getDocument(paramsUser);
 
-      validate.recovery(req, user);
+      validator.formatEmail(req.body.email);
+      validator.isUser(user);
 
       const newPassword = generatePassword();
 

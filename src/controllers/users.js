@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import mongodb from "mongodb";
-import { User } from "../models/Users.js";
-import validate from "../validates/users.js";
+import User from "../models/User.js";
+import validator from "../validators/users.js";
 import { createToken } from "../helpers/token.js";
 import Controller from "../controllers/AbstractController.js";
 
@@ -22,7 +22,7 @@ export default class Users extends Controller {
     const paramsUserChanges = {
       database: "users",
       collection: "users",
-      filter: { _id: ObjectId(res.locals.user._id) },
+      filter: { _id: ObjectId(res.locals.user.id) },
       operator: {
         $set: {
           name: req.body.name,
@@ -31,12 +31,14 @@ export default class Users extends Controller {
     };
   
     try {
-      validate.changeUserName(req);
+      validator.hasName(req.body.name);
+      validator.formatName(req.body.name);
+      validator.maxLengthName(req.body.name.length, 20);
   
       await Controller.service.updateDocument(paramsUserChanges);
 
       const token = createToken({
-        _id: res.locals.user._id,
+        id: res.locals.user.id,
         name: req.body.name,
         email: res.locals.user.email,
         isPremium: res.locals.user.isPremium,
@@ -54,7 +56,7 @@ export default class Users extends Controller {
     const paramsUserChanges = {
       database: "users",
       collection: "users",
-      filter: { _id: ObjectId(res.locals.user._id) },
+      filter: { _id: ObjectId(res.locals.user.id) },
       operator: {
         $set: {
           password: bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10)),
@@ -63,12 +65,18 @@ export default class Users extends Controller {
     };
   
     try {
-      validate.changeUserPassword(req, res);
+      validator.hasOldPassword(req.body.oldPassword);
+      validator.correctPassword(req.body.oldPassword, res.locals.user.password);
+      validator.minLengthPassword(req.body.newPassword.length);
+      validator.maxLengthPassword(req.body.newPassword.length);
+      validator.hasGapsPassword(req.body.newPassword);
+      validator.hasInvalidCharacters(req.body.newPassword);
+      validator.matchPasswords(req.body.oldPassword, req.body.newPassword);
   
       await Controller.service.updateDocument(paramsUserChanges);
       
       const token = createToken({
-        _id: res.locals.user._id,
+        id: res.locals.user.id,
         name: res.locals.user.name,
         email: res.locals.user.email,
         isPremium: res.locals.user.isPremium,

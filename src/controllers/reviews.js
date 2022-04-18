@@ -1,4 +1,4 @@
-import { Review } from "../models/Reviews.js";
+import Review from "../models/Review.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Reviews extends Controller {
