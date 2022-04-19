@@ -17,9 +17,10 @@ export default class Auth extends Controller {
     try {
       const user = await Controller.service.getDocument(params);
 
+      validator.isEmail(req.body.email);
       validator.formatEmail(req.body.email);
       validator.isUser(user);
-      validator.hasPassword(req.body.password);
+      validator.isPassword(req.body.password);
       validator.correctPassword(req.body.password, user.password);
 
       const token = createToken({
@@ -49,6 +50,7 @@ export default class Auth extends Controller {
     try {
       const user = await Controller.service.getDocument(paramsUser);
 
+      validator.isEmail(req.body.email);
       validator.formatEmail(req.body.email);
       validator.isUser(user);
 

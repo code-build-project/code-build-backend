@@ -1,4 +1,5 @@
 import Lesson from "../models/Lesson.js";
+import validator from "../validators/lessons.js";
 import Controller from "../controllers/AbstractController.js";
 
 export default class Lessons extends Controller {
@@ -10,6 +11,8 @@ export default class Lessons extends Controller {
     };
 
     try {
+      validator.isCourseId(req.query.courseId);
+
       const response = await Controller.service.getCollection(params);
       res.send(response.map((item) => new Lesson(item)));
     } catch (err) {

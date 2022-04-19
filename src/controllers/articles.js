@@ -12,11 +12,10 @@ export default class Articles extends Controller {
     };
 
     try {
-      validator.hasId(req.query.id);
-
+      validator.isId(req.query.id);
       const response = await Controller.service.getDocument(params);
 
-      validator.isFindResource(response);
+      validator.isArticle(response);
       res.send(new Article(response));
     } catch (err) {
       Controller.errorHandler(res, err);

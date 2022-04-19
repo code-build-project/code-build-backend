@@ -24,9 +24,10 @@ export default class Registration extends Controller {
       const user = await Controller.service.getDocument(paramsUser);
       const candidate = await Controller.service.getDocument(paramsCandidate);
 
-      validator.hasName(req.body.name);
+      validator.isName(req.body.name);
       validator.formatName(req.body.name);
       validator.maxLengthName(req.body.name.length, 20);
+      validator.isEmail(req.body.email);
       validator.formatEmail(req.body.email);
       validator.maxLengthEmail(req.body.email.length);
       validator.isUser(user);
@@ -90,28 +91,33 @@ export default class Registration extends Controller {
       const candidate = await Controller.service.getDocument(paramsCandidate);
       const user = await Controller.service.getDocument(paramsUser);
 
+      validator.isEmail(req.body.email);
       validator.formatEmail(req.body.email);
       validator.isUser(user);
       validator.timeRegCandidate(candidate);
-      validator.hasPassword(req.body.password);
+      validator.isPassword(req.body.password);
       validator.correctPassword(req.body.password, candidate.password);
-
-      const newUser = {
-        name: candidate.name,
-        email: candidate.email,
-        password: candidate.password,
-        isPremium: false,
-      };
 
       const params = {
         database: "users",
         collection: "users",
-        newDocument: newUser,
+        newDocument: {
+          name: candidate.name,
+          email: candidate.email,
+          password: candidate.password,
+          isPremium: false,
+        },
       };
 
-      await Controller.service.updateCollection(params);
+      const newUser = await Controller.service.updateCollection(params);
 
-      const token = createToken(newUser);
+      const token = createToken({
+        id: newUser.insertedId,
+        name: candidate.name,
+        email: candidate.email,
+        isPremium: false,
+        password: req.body.password,
+      });
       res.status(201).json({ token: `Bearer ${token}` });
     } catch (err) {
       Controller.errorHandler(res, err);

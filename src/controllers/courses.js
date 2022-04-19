@@ -12,11 +12,11 @@ export default class Courses extends Controller {
     };
 
     try {
-      validator.hasId(req.query.id);
+      validator.isId(req.query.id);
 
       const response = await Controller.service.getDocument(params);
 
-      validator.isFindResource(response);
+      validator.isCourse(response);
       res.send(new Course(response));
     } catch (err) {
       Controller.errorHandler(res, err);

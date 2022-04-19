@@ -3,9 +3,9 @@ import Validator from "../validators/abstractValidator.js";
 const regexPassword = /^[a-zа-яё0-9-_!@#$%^&*()=+`~?]+$/;
 
 export default class Users extends Validator {
-  static hasOldPassword(oldPassword) {
+  static isOldPassword(oldPassword) {
     if (!oldPassword) {
-      throw new Validator.Message('IncorrectPassword', 'Поле oldPassword не может быть пустым.', 400);
+      throw new Validator.Message('IncorrectPassword', 'Отсутствует обязательный параметр oldPassword.', 400);
     }
   }
 

@@ -11,6 +11,8 @@ export default class Likes extends Controller {
     };
 
     try {
+      validator.isField(req.query.field);
+
       const response = await Controller.service.getDocument(params);
       const likeList = response ? response.likes : [];
       res.send(likeList);
@@ -40,11 +42,14 @@ export default class Likes extends Controller {
     };
 
     try {
+      validator.isId(req.body.id);
+      validator.isField(req.body.field);
+
       const isField = await Controller.service.checkCollectionName(paramsField);
-      validator.isField(isField, req.body.field);
+      validator.hasField(isField, req.body.field);
 
       const document = await Controller.service.getDocument(paramsDocument);
-      validator.isDocument(document, req.body.id, req.body.field);
+      validator.hasDocument(document, req.body.id, req.body.field);
 
       await Controller.service.updateDocument(paramsLike);
       res.send('Успешно!');
@@ -68,9 +73,11 @@ export default class Likes extends Controller {
     };
 
     try {
-      const isField = await Controller.service.checkCollectionName(paramsField);
+      validator.isId(req.body.id);
+      validator.isField(req.body.field);
 
-      validator.isField(isField, req.body.field);
+      const isField = await Controller.service.checkCollectionName(paramsField);
+      validator.hasField(isField, req.body.field);
 
       await Controller.service.updateDocument(params);
       res.send('Успешно!');

@@ -31,7 +31,7 @@ export default class Users extends Controller {
     };
   
     try {
-      validator.hasName(req.body.name);
+      validator.isName(req.body.name);
       validator.formatName(req.body.name);
       validator.maxLengthName(req.body.name.length, 20);
   
@@ -65,7 +65,7 @@ export default class Users extends Controller {
     };
   
     try {
-      validator.hasOldPassword(req.body.oldPassword);
+      validator.isOldPassword(req.body.oldPassword);
       validator.correctPassword(req.body.oldPassword, res.locals.user.password);
       validator.minLengthPassword(req.body.newPassword.length);
       validator.maxLengthPassword(req.body.newPassword.length);
