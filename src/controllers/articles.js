@@ -1,6 +1,6 @@
 import Article from "../models/Article.js";
 import validator from "../validators/articles.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 export default class Articles extends Controller {
   // Получить одну статью по id

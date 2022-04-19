@@ -1,6 +1,6 @@
 import Course from "../models/Course.js";
 import validator from "../validators/courses.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 export default class Courses extends Controller {
   // Получение одного курса по id

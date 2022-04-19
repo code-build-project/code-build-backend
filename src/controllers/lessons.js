@@ -1,6 +1,6 @@
 import Lesson from "../models/Lesson.js";
 import validator from "../validators/lessons.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 export default class Lessons extends Controller {
   // Получение видеоуроков из указанной коллекции

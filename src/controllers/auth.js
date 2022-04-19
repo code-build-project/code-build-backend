@@ -3,7 +3,7 @@ import validator from "../validators/auth.js";
 import { createToken } from "../helpers/token.js";
 import { sendMail } from "../helpers/nodemailer.js";
 import { generatePassword } from "../helpers/generate.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 export default class Auth extends Controller {
   // Авторизация с возвратом сгенерированного токена

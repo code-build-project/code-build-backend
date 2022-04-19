@@ -3,7 +3,7 @@ import mongodb from "mongodb";
 import User from "../models/User.js";
 import validator from "../validators/users.js";
 import { createToken } from "../helpers/token.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 const { ObjectId } = mongodb;
 

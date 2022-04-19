@@ -1,5 +1,5 @@
 import Review from "../models/Review.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 export default class Reviews extends Controller {
   // Получение всех отзывов

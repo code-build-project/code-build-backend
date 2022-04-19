@@ -1,5 +1,5 @@
 import validator from "../validators/likes.js";
-import Controller from "../controllers/AbstractController.js";
+import Controller from "../controllers/abstractController.js";
 
 export default class Likes extends Controller {
   // Получение списка лайков для определенного пользователя
