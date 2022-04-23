@@ -53,17 +53,6 @@ export default class Users extends Controller {
 
   // Изменить пароль пользователя
   static async changePassword(req, res) {
-    const paramsUserChanges = {
-      database: "users",
-      collection: "users",
-      filter: { _id: ObjectId(res.locals.user.id) },
-      operator: {
-        $set: {
-          password: bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10)),
-        },
-      },
-    };
-  
     try {
       validator.isOldPassword(req.body.oldPassword);
       validator.correctPassword(req.body.oldPassword, res.locals.user.password);
@@ -72,6 +61,19 @@ export default class Users extends Controller {
       validator.hasGapsPassword(req.body.newPassword);
       validator.hasInvalidCharacters(req.body.newPassword);
       validator.matchPasswords(req.body.oldPassword, req.body.newPassword);
+
+      const newPassword = bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10));
+
+      const paramsUserChanges = {
+        database: "users",
+        collection: "users",
+        filter: { _id: ObjectId(res.locals.user.id) },
+        operator: {
+          $set: {
+            password: newPassword
+          },
+        },
+      };  
   
       await Controller.service.updateDocument(paramsUserChanges);
       
@@ -80,7 +82,7 @@ export default class Users extends Controller {
         name: res.locals.user.name,
         email: res.locals.user.email,
         isPremium: res.locals.user.isPremium,
-        password: req.body.newPassword,
+        password: newPassword,
       });
 
       res.status(200).json({ token: `Bearer ${token}` });

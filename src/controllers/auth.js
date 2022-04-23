@@ -28,7 +28,7 @@ export default class Auth extends Controller {
         name: user.name,
         email: user.email,
         isPremium: user.isPremium,
-        password: req.body.password,
+        password: user.password,
       });
 
       res.status(200).json({

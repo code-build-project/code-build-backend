@@ -29,7 +29,7 @@ export default async (req, res, next) => {
         filter: { _id: ObjectId(decode.id) },
       };
       const user = await service.getDocument(params);
-      const isValidPassword = bcrypt.compareSync(decode.password, user.password);
+      const isValidPassword = decode.password === user.password;
     
       if (!isValidPassword) {
         const err = new MessageError('JsonWebTokenError', 'invalid token', 401);
@@ -38,8 +38,7 @@ export default async (req, res, next) => {
       
       res.locals.user = {
         ...user, 
-        id: String(user._id), 
-        password: decode.password 
+        id: String(user._id),
       };
       next();
     } catch (err) {

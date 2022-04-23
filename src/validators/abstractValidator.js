@@ -49,8 +49,8 @@ export default class AbstractValidator {
     }
   }
 
-  static correctPassword(passwordFirst, passwordSecond) {
-    const isPassword = bcrypt.compareSync(passwordFirst, passwordSecond);
+  static correctPassword(password, passwordHash) {
+    const isPassword = bcrypt.compareSync(password, passwordHash);
 
     if (!isPassword) {
       throw new MessageError('IncorrectPassword', 'Неправильный пароль!', 401);

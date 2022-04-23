@@ -9,12 +9,6 @@ export default class Users extends Validator {
     }
   }
 
-  static correctPassword(password, realPassword) {
-    if (password !== realPassword) {
-      throw new Validator.Message('IncorrectPassword', 'Неправильный пароль!', 401);
-    }
-  }
-
   static minLengthPassword(length) {
     if (length < 8) {
       throw new Validator.Message('IncorrectPassword', 'Поле newPassword не может быть меньше 8 символов.', 400);
@@ -22,7 +16,7 @@ export default class Users extends Validator {
   }
 
   static maxLengthPassword(length) {
-    if (length < 12) {
+    if (length > 12) {
       throw new Validator.Message('IncorrectPassword', 'Поле newPassword не может быть больше 12 символов.', 400);
     }
   }

@@ -116,7 +116,7 @@ export default class Registration extends Controller {
         name: candidate.name,
         email: candidate.email,
         isPremium: false,
-        password: req.body.password,
+        password: candidate.password,
       });
       res.status(201).json({ token: `Bearer ${token}` });
     } catch (err) {
