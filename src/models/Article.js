@@ -8,5 +8,6 @@ export default class Article {
     this.tags = article.tags;
     this.image = article.image;
     this.content = article.content;
+    this.gradient = article.gradient;
   }
 }

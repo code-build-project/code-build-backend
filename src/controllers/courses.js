@@ -1,3 +1,4 @@
+import Tag from "../models/Tag.js";
 import Course from "../models/Course.js";
 import validator from "../validators/courses.js";
 import Controller from "../controllers/abstractController.js";
@@ -78,6 +79,21 @@ export default class Courses extends Controller {
       if (array.length > 3) array.pop();
 
       res.send(array.map((item) => new Course(item)));
+    } catch (err) {
+      Controller.errorHandler(res, err);
+    }
+  }
+
+  // Получение тэгов курсов
+  static async getTagList(req, res) {
+    const params = {
+      database: "courses",
+      collection: "tags",
+    };
+
+    try {
+      const response = await Controller.service.getCollection(params);
+      res.send(response.map((item) => new Tag(item)));
     } catch (err) {
       Controller.errorHandler(res, err);
     }

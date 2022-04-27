@@ -7,6 +7,12 @@ export default class Likes extends Validator {
     }
   }
 
+  static isCourseId(field, courseId) {
+    if (field === 'lessons' && !courseId) {
+      throw new Validator.Message('IncorrectCourseId', 'Отсутствует обязательный параметр courseId.', 400);
+    }
+  }
+
   static hasField(isField, field) {
     if (!isField) {
       throw new Validator.Message('IncorrectField', `Коллекции ${field} не существует.`, 400);

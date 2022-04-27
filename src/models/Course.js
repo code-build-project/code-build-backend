@@ -9,5 +9,6 @@ export default class Course {
     this.views = course.views;
     this.tags = course.tags;
     this.image = course.image;
+    this.gradient = course.gradient;
   }
 }

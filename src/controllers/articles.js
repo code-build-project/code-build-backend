@@ -1,3 +1,4 @@
+import Tag from "../models/Tag.js";
 import Article from "../models/Article.js";
 import validator from "../validators/articles.js";
 import Controller from "../controllers/abstractController.js";
@@ -77,6 +78,21 @@ export default class Articles extends Controller {
       if (array.length > 3) array.pop();
 
       res.send(array.map((item) => new Article(item)));
+    } catch (err) {
+      Controller.errorHandler(res, err);
+    }
+  }
+
+  // Получение тэгов статей
+  static async getTagList(req, res) {
+    const params = {
+      database: "articles",
+      collection: "tags",
+    };
+
+    try {
+      const response = await Controller.service.getCollection(params);
+      res.send(response.map((item) => new Tag(item)));
     } catch (err) {
       Controller.errorHandler(res, err);
     }

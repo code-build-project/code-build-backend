@@ -26,4 +26,9 @@ router.get("/articles/favorites", Articles.getFavoriteArticleList);
  */
 router.get("/articles/popular-articles", Articles.getPopularArticleList);
 
+/**
+ * Получение тэгов статей
+ */
+router.get("/articles/tags", Articles.getTagList);
+
 export default router;

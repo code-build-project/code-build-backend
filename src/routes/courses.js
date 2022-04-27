@@ -26,4 +26,9 @@ router.get("/courses/favorites", Courses.getFavoriteCourseList);
  */
 router.get("/courses/popular-courses", Courses.getPopularCourseList);
 
+/**
+ * Получение тэгов курсов
+ */
+ router.get("/courses/tags", Courses.getTagList);
+
 export default router;

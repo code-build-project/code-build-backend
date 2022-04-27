@@ -23,33 +23,34 @@ export default class Likes extends Controller {
 
   // Добавить id карточки в список лайков
   static async addLike(req, res) {
+    const { field, id, courseId } = req.body;
+
     const paramsField = {
-      database: req.body.field
-    }
-
-    const paramsDocument = {
-      database: req.body.field,
-      collection: req.body.field,
-      filter: { id: req.body.id },
-    };
-
-    const paramsLike = {
+      database: field,
+    },
+    paramsDocument = {
+      database: field,
+      collection: field === 'lessons' ? courseId : field,
+      filter: { id: id },
+    },
+    paramsLike = {
       database: "likes",
-      collection: req.body.field,
+      collection: field,
       filter: { userId: res.locals.user.id },
-      operator: { $addToSet: { likes: req.body.id } },
+      operator: { $addToSet: { likes: id } },
       option: { upsert: true },
     };
 
     try {
-      validator.isId(req.body.id);
-      validator.isField(req.body.field);
+      validator.isId(id);
+      validator.isField(field);
+      validator.isCourseId(field, courseId);
 
-      const isField = await Controller.service.checkCollectionName(paramsField);
-      validator.hasField(isField, req.body.field);
+      let isField = await Controller.service.checkCollectionName(paramsField);
+      validator.hasField(isField, field);
 
-      const document = await Controller.service.getDocument(paramsDocument);
-      validator.hasDocument(document, req.body.id, req.body.field);
+      let document = await Controller.service.getDocument(paramsDocument);
+      validator.hasDocument(document, id, field);
 
       await Controller.service.updateDocument(paramsLike);
       res.send('Успешно!');
@@ -60,26 +61,27 @@ export default class Likes extends Controller {
 
   // Удалить id карточки из списка лайков
   static async deleteLike(req, res) {
-    const paramsField = {
-      database: req.body.field
-    }
+    const { field, id } = req.body;
 
-    const params = {
+    const paramsField = {
+      database: field
+    },
+    paramsLike = {
       database: "likes",
-      collection: req.body.field,
+      collection: field,
       filter: { userId: res.locals.user.id },
-      operator: { $pull: { likes: req.body.id } },
+      operator: { $pull: { likes: id } },
       option: { upsert: true },
     };
 
     try {
-      validator.isId(req.body.id);
-      validator.isField(req.body.field);
+      validator.isId(id);
+      validator.isField(field);
 
-      const isField = await Controller.service.checkCollectionName(paramsField);
-      validator.hasField(isField, req.body.field);
+      let isField = await Controller.service.checkCollectionName(paramsField);
+      validator.hasField(isField, field);
 
-      await Controller.service.updateDocument(params);
+      await Controller.service.updateDocument(paramsLike);
       res.send('Успешно!');
     } catch (err) {
       Controller.errorHandler(res, err);
