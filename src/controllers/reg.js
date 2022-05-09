@@ -47,7 +47,7 @@ export default class Registration extends Controller {
       const paramsIndexCandidate = {
         database: "users",
         collection: "candidates",
-        lifeTime: 40,
+        lifeTime: 100,
       };
 
       const newCandidate = {
