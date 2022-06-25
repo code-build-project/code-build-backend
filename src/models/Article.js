@@ -9,5 +9,6 @@ export default class Article {
     this.image = article.image;
     this.content = article.content;
     this.gradient = article.gradient;
+    this.time = article.time;
   }
 }
