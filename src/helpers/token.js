@@ -6,17 +6,17 @@ import keys from "../config/keys.js";
  * @param {object} user - данные пользователя для шифрования в токен
  */
 export const createToken = (user) => {
-  return jwt.sign(
-    {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      isPremium: user.isPremium,
-      password: user.password,
-    },
-    keys.jwt,
-    { expiresIn: 21600 }
-  );
+    return jwt.sign(
+        {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            isPremium: user.isPremium,
+            password: user.password,
+        },
+        keys.jwt,
+        { expiresIn: 21600 }
+    );
 };
 
 /**
@@ -24,5 +24,5 @@ export const createToken = (user) => {
  * @param {string} token - токен
  */
 export const verifyToken = (token) => {
-  return jwt.verify(token, keys.jwt);
+    return jwt.verify(token, keys.jwt);
 };

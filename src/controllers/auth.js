@@ -6,81 +6,81 @@ import { generatePassword } from "../helpers/generate.js";
 import Controller from "../controllers/abstractController.js";
 
 export default class Auth extends Controller {
-  // Авторизация с возвратом сгенерированного токена
-  static async login(req, res) {
-    const params = {
-      database: "users",
-      collection: "users",
-      filter: { email: req.body.email },
-    };
+    // Авторизация с возвратом сгенерированного токена
+    static async login(req, res) {
+        const params = {
+            database: "users",
+            collection: "users",
+            filter: { email: req.body.email },
+        };
 
-    try {
-      const user = await Controller.service.getDocument(params);
+        try {
+            const user = await Controller.service.getDocument(params);
 
-      validator.isEmail(req.body.email);
-      validator.formatEmail(req.body.email);
-      validator.isUser(user);
-      validator.isPassword(req.body.password);
-      validator.correctPassword(req.body.password, user.password);
+            validator.isEmail(req.body.email);
+            validator.formatEmail(req.body.email);
+            validator.isUser(user);
+            validator.isPassword(req.body.password);
+            validator.correctPassword(req.body.password, user.password);
 
-      const token = createToken({
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        isPremium: user.isPremium,
-        password: user.password,
-      });
+            const token = createToken({
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                isPremium: user.isPremium,
+                password: user.password,
+            });
 
-      res.status(200).json({
-        token: `Bearer ${token}`,
-      });
-    } catch (err) {
-      Controller.errorHandler(res, err);
+            res.status(200).json({
+                token: `Bearer ${token}`,
+            });
+        } catch (err) {
+            Controller.errorHandler(res, err);
+        }
     }
-  }
 
-  // Восстановление пароля
-  static async recovery(req, res) {
-    const paramsUser = {
-      database: "users",
-      collection: "users",
-      filter: { email: req.body.email },
-    };
-    
-    try {
-      const user = await Controller.service.getDocument(paramsUser);
+    // Восстановление пароля
+    static async recovery(req, res) {
+        const paramsUser = {
+            database: "users",
+            collection: "users",
+            filter: { email: req.body.email },
+        };
 
-      validator.isEmail(req.body.email);
-      validator.formatEmail(req.body.email);
-      validator.isUser(user);
+        try {
+            const user = await Controller.service.getDocument(paramsUser);
 
-      const newPassword = generatePassword();
+            validator.isEmail(req.body.email);
+            validator.formatEmail(req.body.email);
+            validator.isUser(user);
 
-      const info = {
-        to: req.body.email,
-        password: newPassword,
-        subject: "Восстановление пароля",
-        message: "Во вложении новый пароль, от вашего аккаунта.",
-      };
+            const newPassword = generatePassword();
 
-      await sendMail(info);
+            const info = {
+                to: req.body.email,
+                password: newPassword,
+                subject: "Восстановление пароля",
+                message: "Во вложении новый пароль, от вашего аккаунта.",
+            };
 
-      const paramsPassword = {
-        database: "users",
-        collection: "users",
-        filter: { email: req.body.email },
-        operator: {
-          $set: {
-            password: bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)),
-          },
-        },
-      };
+            await sendMail(info);
 
-      await Controller.service.updateDocument(paramsPassword);
+            const paramsPassword = {
+                database: "users",
+                collection: "users",
+                filter: { email: req.body.email },
+                operator: {
+                    $set: {
+                        password: bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)),
+                    },
+                },
+            };
 
-      res.status(201).json({ message: "Пароль успешно изменен." });
-    } catch (err) {
-      Controller.errorHandler(res, err);
+            await Controller.service.updateDocument(paramsPassword);
+
+            res.status(201).json({ message: "Пароль успешно изменен." });
+        } catch (err) {
+            Controller.errorHandler(res, err);
+        }
     }
-  }
 }

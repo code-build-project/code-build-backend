@@ -8,7 +8,7 @@ const router = Router();
  * @param {string} email - Почта пользователя
  * @param {string} password - Пароль из письма
  */
-router.post('/login', Auth.login);
+router.post("/login", Auth.login);
 
 /**
  * Восстановление пароля
