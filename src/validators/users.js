@@ -18,7 +18,8 @@ export default class Users extends Validator {
             throw new Validator.Message(
                 "IncorrectPassword",
                 "Поле newPassword не может быть меньше 8 символов.",
-                400
+                400,
+                "newPassword"
             );
         }
     }
@@ -28,7 +29,8 @@ export default class Users extends Validator {
             throw new Validator.Message(
                 "IncorrectPassword",
                 "Поле newPassword не может быть больше 12 символов.",
-                400
+                400,
+                "newPassword"
             );
         }
     }
@@ -38,7 +40,8 @@ export default class Users extends Validator {
             throw new Validator.Message(
                 "IncorrectPassword",
                 "Поле newPassword не может содержать пробелы.",
-                400
+                400,
+                "newPassword"
             );
         }
     }
@@ -48,7 +51,8 @@ export default class Users extends Validator {
             throw new Validator.Message(
                 "IncorrectPassword",
                 "Поле newPassword содержит недопустимые символы.",
-                400
+                400,
+                "newPassword"
             );
         }
     }
@@ -58,7 +62,8 @@ export default class Users extends Validator {
             throw new Validator.Message(
                 "IncorrectPassword",
                 "Поле newPassword не может совпадать с полем oldPassword.",
-                400
+                400,
+                "newPassword"
             );
         }
     }

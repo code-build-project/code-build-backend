@@ -55,7 +55,11 @@ export default class Users extends Controller {
     static async changePassword(req, res) {
         try {
             validator.isOldPassword(req.body.oldPassword);
-            validator.correctPassword(req.body.oldPassword, res.locals.user.password);
+            validator.correctPassword(
+                req.body.oldPassword,
+                res.locals.user.password,
+                "oldPassword"
+            );
             validator.minLengthPassword(req.body.newPassword.length);
             validator.maxLengthPassword(req.body.newPassword.length);
             validator.hasGapsPassword(req.body.newPassword);
