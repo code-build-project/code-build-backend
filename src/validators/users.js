@@ -17,7 +17,7 @@ export default class Users extends Validator {
         if (length < 8) {
             throw new Validator.Message(
                 "IncorrectPassword",
-                "Поле newPassword не может быть меньше 8 символов.",
+                "Поле не может быть меньше 8 символов.",
                 400,
                 "newPassword"
             );
@@ -25,10 +25,10 @@ export default class Users extends Validator {
     }
 
     static maxLengthPassword(length) {
-        if (length > 12) {
+        if (length > 20) {
             throw new Validator.Message(
                 "IncorrectPassword",
-                "Поле newPassword не может быть больше 12 символов.",
+                "Поле не может быть больше 20 символов.",
                 400,
                 "newPassword"
             );
@@ -39,7 +39,7 @@ export default class Users extends Validator {
         if (password.includes(" ")) {
             throw new Validator.Message(
                 "IncorrectPassword",
-                "Поле newPassword не может содержать пробелы.",
+                "Поле не может содержать пробелы.",
                 400,
                 "newPassword"
             );
@@ -50,7 +50,7 @@ export default class Users extends Validator {
         if (!regexPassword.test(password)) {
             throw new Validator.Message(
                 "IncorrectPassword",
-                "Поле newPassword содержит недопустимые символы.",
+                "Поле содержит недопустимые символы.",
                 400,
                 "newPassword"
             );
@@ -61,7 +61,7 @@ export default class Users extends Validator {
         if (oldPassword === newPassword) {
             throw new Validator.Message(
                 "IncorrectPassword",
-                "Поле newPassword не может совпадать с полем oldPassword.",
+                "Новый пароль не может совпадать со старым.",
                 400,
                 "newPassword"
             );
