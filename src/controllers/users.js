@@ -19,6 +19,8 @@ export default class Users extends Controller {
 
     // Изменение данных пользователя
     static async change(req, res) {
+        let newVersion = ++res.locals.user.version;
+
         let paramsUserChanges = {
             database: "users",
             collection: "users",
@@ -26,6 +28,7 @@ export default class Users extends Controller {
             operator: {
                 $set: {
                     name: req.body.name,
+                    version: newVersion,
                 },
             },
         };
@@ -58,10 +61,8 @@ export default class Users extends Controller {
 
             const token = createToken({
                 id: res.locals.user.id,
-                name: req.body.name,
                 email: res.locals.user.email,
-                isPremium: res.locals.user.isPremium,
-                password: newPassword,
+                version: newVersion,
             });
 
             res.status(200).json({ token: `Bearer ${token}` });

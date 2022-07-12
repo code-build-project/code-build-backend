@@ -9,10 +9,8 @@ export const createToken = (user) => {
     return jwt.sign(
         {
             id: user.id,
-            name: user.name,
             email: user.email,
-            isPremium: user.isPremium,
-            password: user.password,
+            version: user.version,
         },
         keys.jwt,
         { expiresIn: 28800 }

@@ -27,11 +27,11 @@ export default async (req, res, next) => {
                 filter: { _id: ObjectId(decode.id) },
             };
             const user = await service.getDocument(params);
-            const isValidPassword = decode.password === user.password;
+            const isValidVersion = decode.version === user.version;
 
-            if (!isValidPassword) {
+            if (!isValidVersion) {
                 const err = new MessageError("JsonWebTokenError", "invalid token", 401);
-                return res.status(err.status).json(err.data);
+                return res.status(err.status).json(err);
             }
 
             res.locals.user = {

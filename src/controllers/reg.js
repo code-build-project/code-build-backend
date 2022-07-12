@@ -106,6 +106,7 @@ export default class Registration extends Controller {
                     email: candidate.email,
                     password: candidate.password,
                     isPremium: false,
+                    version: 1,
                 },
             };
 
@@ -113,10 +114,8 @@ export default class Registration extends Controller {
 
             const token = createToken({
                 id: newUser.insertedId,
-                name: candidate.name,
                 email: candidate.email,
-                isPremium: false,
-                password: candidate.password,
+                version: 1,
             });
             res.status(201).json({ token: `Bearer ${token}` });
         } catch (err) {

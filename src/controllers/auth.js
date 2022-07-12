@@ -25,10 +25,8 @@ export default class Auth extends Controller {
 
             const token = createToken({
                 id: user._id,
-                name: user.name,
                 email: user.email,
-                isPremium: user.isPremium,
-                password: user.password,
+                version: user.version,
             });
 
             res.status(200).json({
@@ -72,6 +70,7 @@ export default class Auth extends Controller {
                 operator: {
                     $set: {
                         password: bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)),
+                        version: ++user.version,
                     },
                 },
             };
