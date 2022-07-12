@@ -15,7 +15,7 @@ export const createToken = (user) => {
             password: user.password,
         },
         keys.jwt,
-        { expiresIn: 21600 }
+        { expiresIn: 28800 }
     );
 };
 

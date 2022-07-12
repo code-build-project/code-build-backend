@@ -6,8 +6,7 @@ import { verifyToken } from "../helpers/token.js";
 const { ObjectId } = mongodb;
 const protectedRoutes = [
     "/user",
-    "/user/change-name",
-    "/user/change-password",
+    "/user/change",
     "/likes",
     "/likes/add",
     "/likes/delete",

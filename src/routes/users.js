@@ -9,16 +9,12 @@ const router = Router();
 router.get("/user", Users.get);
 
 /**
- * Изменить имя пользователя
+ * Изменить данные пользователя
  * @param {string} name - Новое имя пользователя
- */
-router.put("/user/change-name", Users.changeName);
-
-/**
- * Изменить пароль пользователя
+ * @param {boolean} isChangePassword - Флаг на изменение пароля
  * @param {string} oldPassword - Текущий пароль пользователя
  * @param {string} newPassword - Новый пароль пользователя
  */
-router.put("/user/change-password", Users.changePassword);
+router.put("/user/change", Users.change);
 
 export default router;
