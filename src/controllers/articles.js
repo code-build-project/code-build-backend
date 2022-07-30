@@ -97,4 +97,30 @@ export default class Articles extends Controller {
             Controller.errorHandler(res, err);
         }
     }
+
+    // Увеличение количества просмотров статьи
+    static async addView(req, res) {
+        let params = {
+            database: "articles",
+            collection: "articles",
+            filter: { id: req.body.id },
+        };
+
+        try {
+            validator.isId(req.body.id);
+            const response = await Controller.service.getDocument(params);
+
+            validator.isArticle(response);
+            params.operator = {
+                $set: {
+                    views: ++response.views,
+                },
+            }
+            await Controller.service.updateDocument(params);
+            
+            res.send("Успешно!");
+        } catch (err) {
+            Controller.errorHandler(res, err);
+        }
+    }
 }

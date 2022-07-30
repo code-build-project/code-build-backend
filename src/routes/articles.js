@@ -31,4 +31,10 @@ router.get("/articles/popular-articles", Articles.getPopularArticleList);
  */
 router.get("/articles/tags", Articles.getTagList);
 
+/**
+ * Увеличение количества просмотров статьи
+ * @param {string} id - id статьи
+ */
+router.put("/articles/add-view", Articles.addView);
+
 export default router;

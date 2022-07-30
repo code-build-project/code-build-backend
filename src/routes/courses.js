@@ -31,4 +31,10 @@ router.get("/courses/popular-courses", Courses.getPopularCourseList);
  */
 router.get("/courses/tags", Courses.getTagList);
 
+/**
+ * Увеличение количества просмотров курса
+ * @param {string} id - id курса
+ */
+ router.put("/courses/add-view", Courses.addView);
+
 export default router;

@@ -10,4 +10,10 @@ export default class Lessons extends Validator {
             );
         }
     }
+
+    static isLesson(lesson) {
+        if (!lesson) {
+            throw new Validator.Message("NotFound", "Урока с данным id не существует.", 404);
+        }
+    }
 }

@@ -14,4 +14,11 @@ router.get("/lessons", Lessons.getCourseLessons);
  */
 router.get("/lessons/favorites", Lessons.getFavoriteLessons);
 
+/**
+ * Увеличение количества просмотров урока
+ * @param {string} courseId - id курса
+ * @param {string} id - id урока
+ */
+ router.put("/lessons/add-view", Lessons.addView);
+
 export default router;

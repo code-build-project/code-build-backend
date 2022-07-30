@@ -42,4 +42,31 @@ export default class Lessons extends Controller {
             Controller.errorHandler(res, err);
         }
     }
+
+    // Увеличение количества просмотров урока
+    static async addView(req, res) {
+        let params = {
+            database: "lessons",
+            collection: req.body.courseId,
+            filter: { id: req.body.id },
+        };
+
+        try {
+            validator.isCourseId(req.body.courseId);
+            validator.isId(req.body.id);
+            const response = await Controller.service.getDocument(params);
+
+            validator.isLesson(response);
+            params.operator = {
+                $set: {
+                    views: ++response.views,
+                },
+            }
+            await Controller.service.updateDocument(params);
+            
+            res.send("Успешно!");
+        } catch (err) {
+            Controller.errorHandler(res, err);
+        }
+    }
 }

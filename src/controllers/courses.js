@@ -98,4 +98,30 @@ export default class Courses extends Controller {
             Controller.errorHandler(res, err);
         }
     }
+
+    // Увеличение количества просмотров курса
+    static async addView(req, res) {
+        let params = {
+            database: "courses",
+            collection: "courses",
+            filter: { id: req.body.id },
+        };
+
+        try {
+            validator.isId(req.body.id);
+            const response = await Controller.service.getDocument(params);
+
+            validator.isCourse(response);
+            params.operator = {
+                $set: {
+                    views: ++response.views,
+                },
+            }
+            await Controller.service.updateDocument(params);
+            
+            res.send("Успешно!");
+        } catch (err) {
+            Controller.errorHandler(res, err);
+        }
+    }
 }
