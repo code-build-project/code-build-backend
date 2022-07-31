@@ -21,7 +21,7 @@ export default class Users extends Controller {
     static async change(req, res) {
         let newVersion = ++res.locals.user.version;
 
-        let paramsUserChanges = {
+        let params = {
             database: "users",
             collection: "users",
             filter: { _id: ObjectId(res.locals.user.id) },
@@ -54,10 +54,10 @@ export default class Users extends Controller {
                 validator.matchPasswords(req.body.oldPassword, req.body.newPassword);
                 
                 newPassword = bcrypt.hashSync(req.body.newPassword, bcrypt.genSaltSync(10));
-                paramsUserChanges.operator.$set.password = newPassword;
+                params.operator.$set.password = newPassword;
             }
 
-            await Controller.service.updateDocument(paramsUserChanges);
+            await Controller.service.updateDocument(params);
 
             const token = createToken({
                 id: res.locals.user.id,

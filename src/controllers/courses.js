@@ -42,22 +42,22 @@ export default class Courses extends Controller {
 
     // Получение курсов которые лайкнул пользователь
     static async getFavoriteCourseList(req, res) {
-        const paramsLikes = {
+        let params = {
             database: "likes",
             collection: "courses",
             filter: { userId: res.locals.user.id },
         };
 
         try {
-            const { likes = [] } = (await Controller.service.getDocument(paramsLikes)) || {};
+            const { likes = [] } = (await Controller.service.getDocument(params)) || {};
 
-            const paramsCourses = {
+            params = {
                 database: "courses",
                 collection: "courses",
                 filter: { id: { $in: likes } },
             };
-
-            const response = await Controller.service.getCollection(paramsCourses);
+            const response = await Controller.service.getCollection(params);
+            
             res.send(response.map((item) => new Course(item)));
         } catch (err) {
             Controller.errorHandler(res, err);

@@ -39,14 +39,14 @@ export default class Auth extends Controller {
 
     // Восстановление пароля
     static async recovery(req, res) {
-        const paramsUser = {
+        let params = {
             database: "users",
             collection: "users",
             filter: { email: req.body.email },
         };
 
         try {
-            const user = await Controller.service.getDocument(paramsUser);
+            const user = await Controller.service.getDocument(params);
 
             validator.isEmail(req.body.email);
             validator.formatEmail(req.body.email);
@@ -63,7 +63,7 @@ export default class Auth extends Controller {
 
             await sendMail(info);
 
-            const paramsPassword = {
+            params = {
                 database: "users",
                 collection: "users",
                 filter: { email: req.body.email },
@@ -74,8 +74,7 @@ export default class Auth extends Controller {
                     },
                 },
             };
-
-            await Controller.service.updateDocument(paramsPassword);
+            await Controller.service.updateDocument(params);
 
             res.status(201).json({ message: "Пароль успешно изменен." });
         } catch (err) {

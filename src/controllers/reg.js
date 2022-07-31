@@ -8,21 +8,21 @@ import Controller from "../controllers/abstractController.js";
 export default class Registration extends Controller {
     // Отправка пароля подтверждения на почту и занесения нового пользователя в кандидаты
     static async create(req, res) {
-        try {
-            const paramsUser = {
-                database: "users",
-                collection: "users",
-                filter: { email: req.body.email },
-            };
+        let params = {
+            database: "users",
+            collection: "users",
+            filter: { email: req.body.email },
+        };
 
-            const paramsCandidate = {
+        try {
+            const user = await Controller.service.getDocument(params);
+
+            params = {
                 database: "users",
                 collection: "candidates",
                 filter: { email: req.body.email },
             };
-
-            const user = await Controller.service.getDocument(paramsUser);
-            const candidate = await Controller.service.getDocument(paramsCandidate);
+            const candidate = await Controller.service.getDocument(params);
 
             validator.isName(req.body.name);
             validator.formatName(req.body.name);
@@ -44,27 +44,26 @@ export default class Registration extends Controller {
 
             await sendMail(info);
 
-            const paramsIndexCandidate = {
-                database: "users",
-                collection: "candidates",
-                lifeTime: 100,
-            };
-
             const newCandidate = {
                 name: req.body.name,
                 email: req.body.email,
                 password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
                 createdAt: new Date(),
             };
+            
+            params = {
+                database: "users",
+                collection: "candidates",
+                lifeTime: 100,
+            };
+            await Controller.service.createIndex(params);
 
-            const paramsNewCandidate = {
+            params = {
                 database: "users",
                 collection: "candidates",
                 newDocument: newCandidate,
             };
-
-            await Controller.service.createIndex(paramsIndexCandidate);
-            await Controller.service.updateCollection(paramsNewCandidate);
+            await Controller.service.updateCollection(params);
 
             const message = "Пароль для активации аккаунта отправлен на почту.";
             res.status(200).json({ message });
@@ -75,21 +74,21 @@ export default class Registration extends Controller {
 
     // Подтверждение регистрации и добаваление нового пользователя в БД
     static async confirm(req, res) {
-        try {
-            const paramsCandidate = {
-                database: "users",
-                collection: "candidates",
-                filter: { email: req.body.email },
-            };
+        let params = {
+            database: "users",
+            collection: "candidates",
+            filter: { email: req.body.email },
+        };
 
-            const paramsUser = {
+        try {
+            const candidate = await Controller.service.getDocument(params);
+
+            params = {
                 database: "users",
                 collection: "users",
                 filter: { email: req.body.email },
             };
-
-            const candidate = await Controller.service.getDocument(paramsCandidate);
-            const user = await Controller.service.getDocument(paramsUser);
+            const user = await Controller.service.getDocument(params);
 
             validator.isEmail(req.body.email);
             validator.formatEmail(req.body.email);
@@ -98,7 +97,7 @@ export default class Registration extends Controller {
             validator.isPassword(req.body.password);
             validator.correctPassword(req.body.password, candidate.password);
 
-            const params = {
+            params = {
                 database: "users",
                 collection: "users",
                 newDocument: {
@@ -109,7 +108,6 @@ export default class Registration extends Controller {
                     version: 1,
                 },
             };
-
             const newUser = await Controller.service.updateCollection(params);
 
             const token = createToken({

@@ -41,22 +41,21 @@ export default class Articles extends Controller {
 
     // Получение статьей которые лайкнул пользователь
     static async getFavoriteArticleList(req, res) {
-        const paramsLikes = {
+        let params = {
             database: "likes",
             collection: "articles",
             filter: { userId: res.locals.user.id },
         };
 
         try {
-            const { likes = [] } = (await Controller.service.getDocument(paramsLikes)) || {};
+            const { likes = [] } = (await Controller.service.getDocument(params)) || {};
 
-            const paramsArticles = {
+            params = {
                 database: "articles",
                 collection: "articles",
                 filter: { id: { $in: likes } },
             };
-
-            const response = await Controller.service.getCollection(paramsArticles);
+            const response = await Controller.service.getCollection(params);
             res.send(response.map((item) => new Article(item)));
         } catch (err) {
             Controller.errorHandler(res, err);

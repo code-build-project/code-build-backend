@@ -22,21 +22,21 @@ export default class Lessons extends Controller {
 
     // Получение понравившехся видеоуроков из всех коллекций
     static async getFavoriteLessons(req, res) {
-        const paramsLikes = {
+        let params = {
             database: "likes",
             collection: "lessons",
             filter: { userId: res.locals.user.id },
         };
 
         try {
-            const { likes = [] } = (await Controller.service.getDocument(paramsLikes)) || {};
+            const { likes = [] } = (await Controller.service.getDocument(params)) || {};
 
-            const paramsLessons = {
+            params = {
                 database: "lessons",
                 filter: { id: { $in: likes } },
             };
-
-            const response = await Controller.service.getDatabase(paramsLessons);
+            const response = await Controller.service.getDatabase(params);
+            
             res.send(response.map((item) => new Lesson(item)));
         } catch (err) {
             Controller.errorHandler(res, err);
