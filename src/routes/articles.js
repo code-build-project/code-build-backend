@@ -24,7 +24,7 @@ router.get("/articles/favorites", Articles.getFavoriteArticleList);
  * Получение рандомных статьей
  * @param {string|undefined} id - id ресурса которое не должно быть среди результатов
  */
-router.get("/articles/popular-articles", Articles.getPopularArticleList);
+router.get("/articles/populars", Articles.getPopularArticleList);
 
 /**
  * Получение тэгов статей

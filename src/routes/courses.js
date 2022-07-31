@@ -24,7 +24,7 @@ router.get("/courses/favorites", Courses.getFavoriteCourseList);
  * Получение рандомных курсов
  * @param {string|undefined} id - id ресурса которое не должно быть среди результатов
  */
-router.get("/courses/popular-courses", Courses.getPopularCourseList);
+router.get("/courses/populars", Courses.getPopularCourseList);
 
 /**
  * Получение тэгов курсов

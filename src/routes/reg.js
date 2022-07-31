@@ -15,6 +15,6 @@ router.post("/sign", Registration.create);
  * @param {string} email - Почта пользователя
  * @param {string} password - Пароль из письма
  */
-router.post("/confirm-sign", Registration.confirm);
+router.post("/sign/confirm", Registration.confirm);
 
 export default router;

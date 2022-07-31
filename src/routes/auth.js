@@ -14,6 +14,6 @@ router.post("/login", Auth.login);
  * Восстановление пароля
  * @param {string} email - Почта пользователя
  */
-router.post("/recovery-password", Auth.recovery);
+router.post("/login/recovery", Auth.recovery);
 
 export default router;
